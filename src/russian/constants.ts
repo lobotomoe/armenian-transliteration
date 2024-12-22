@@ -18,8 +18,8 @@ export const ARM_TO_RUS_MAP: Record<string, string> = {
   Է: "Э",
   ը: "ы",
   Ը: "Ы",
-  թ: "т'",
-  Թ: "Т'",
+  թ: "т",
+  Թ: "Т",
   ժ: "ж",
   Ժ: "Ж",
   ի: "и",
@@ -36,8 +36,8 @@ export const ARM_TO_RUS_MAP: Record<string, string> = {
   Հ: "Х",
   ձ: "дз",
   Ձ: "Дз",
-  ղ: "гх",
-  Ղ: "Гх",
+  ղ: "г",
+  Ղ: "Г",
   ճ: "ч'",
   Ճ: "Ч'",
   մ: "м",
@@ -90,51 +90,26 @@ export const TEMP_SYMBOLS_MAP: {
   backward: Record<string, string>;
 } = {
   forward: {
-    // Map these sequences to temporary symbols for later processing.
-    // "ու" or "Ու" -> "֏"
-    // "և", "եւ", "Եւ" -> "֎"
-    ու: "֏",
-    Ու: "֏",
-    և: "֎",
-    եւ: "֎",
-    Եւ: "֎",
+    // Map these sequences to temporary (most unicode rare) symbols for later processing.
+    // ORDER MATTERS! We need to process longer sequences first.
+
+    յու: "\u2117", // "յու" -> "ю" -> "ю"
+    Յու: "\u2117", // "Յու" -> "Ю" -> "ю"
+
+    յա: "\u203D", // "յա" -> "я" -> "я"
+    Յա: "\u203D", // "Յա" -> "Я" -> "я"
+
+    ու: "\u2042", // "ու" -> "у" -> "у"
+    Ու: "\u2042", // "Ու" -> "у" -> "у"
+
+    և: "\u00A4", // "և" -> "եվ" -> "ев"
+    եւ: "\u00A4", // "եւ" -> "ев" -> "ев"
+    Եւ: "\u00A4", // "Եւ" -> "Ев" -> "ев"
   },
   backward: {
-    // Once we see these temporary symbols, map them to their Russian equivalents.
-    // "֏" -> "у"
-    // "֎" -> "эв"
-    "֏": "у",
-    "֎": "эв",
+    "\u2042": "у",
+    "\u00A4": "ев",
+    "\u203D": "я",
+    "\u2117": "ю",
   },
 };
-
-/**
- * Function to transliterate Armenian text to Russian.
- * @param text Armenian text to transliterate.
- * @returns Transliterated Russian text.
- */
-export function transliterateArmenianToRussian(text: string): string {
-  // First, replace multi-character sequences with temporary symbols.
-  for (const [arm, temp] of Object.entries(TEMP_SYMBOLS_MAP.forward)) {
-    const regex = new RegExp(arm, "g");
-    text = text.replace(regex, temp);
-  }
-
-  // Then, replace individual Armenian characters with Russian equivalents.
-  let result = "";
-  for (const char of text) {
-    if (ARM_TO_RUS_MAP[char]) {
-      result += ARM_TO_RUS_MAP[char];
-    } else {
-      result += char; // If the character is not found in the map, leave it unchanged.
-    }
-  }
-
-  // Finally, replace temporary symbols with their final Russian equivalents.
-  for (const [temp, rus] of Object.entries(TEMP_SYMBOLS_MAP.backward)) {
-    const regex = new RegExp(temp, "g");
-    result = result.replace(regex, rus);
-  }
-
-  return result;
-}

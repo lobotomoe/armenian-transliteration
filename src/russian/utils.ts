@@ -8,7 +8,6 @@ export function isArmenianVowel(ch: string): boolean {
   const { backward } = TEMP_SYMBOLS_MAP;
 
   // If it's a temporary symbol, map it back to see if it starts with a vowel.
-  // "֏" -> "u" => vowel, "֎" -> "ev" => starts with 'e', also a vowel
   if (ch in backward) {
     return true;
   }

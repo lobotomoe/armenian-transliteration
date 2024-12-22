@@ -91,19 +91,16 @@ export const TEMP_SYMBOLS_MAP: {
 } = {
   forward: {
     // Map these sequences to temporary symbols for later processing.
-    // "ու" or "Ու" -> "֏"
-    // "և", "եւ", "Եւ" -> "֎"
-    ու: "֏",
-    Ու: "֏",
-    և: "֎",
-    եւ: "֎",
-    Եւ: "֎",
+    ու: "\u2042",
+    Ու: "\u2042",
+    և: "\u00A4",
+    եւ: "\u00A4",
+    Եւ: "\u00A4",
   },
   backward: {
     // Once we see these temporary symbols, map them to their Latin equivalents.
-    // "֏" -> "u"
-    // "֎" -> "ev"
-    "֏": "u",
-    "֎": "ev",
+
+    "\u2042": "u",
+    "\u00A4": "ev",
   },
 };

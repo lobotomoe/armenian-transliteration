@@ -39,13 +39,13 @@ export const FIRST_CHAR_RULES: FirstCharRule[] = [
   },
   {
     name: "YevRule",
-    // Trigger if the word starts with "֎" (which corresponds to "և" and variations)
-    match: (first) => first === "֎",
+    // Trigger if the word starts with "\u00A4" (which corresponds to "և" and variations)
+    match: (first) => first === "\u00A4",
     transliteration: (_, secondChar) => {
       const secondCharLat = secondChar
         ? mapArmenianCharToLatin(secondChar)
         : "";
-      // "֎" -> "ev", but if it's the first character in a word, it's "yev"
+      // "\u00A4" -> "ev", but if it's the first character in a word, it's "yev"
       return `yev${secondCharLat}`;
     },
   },
