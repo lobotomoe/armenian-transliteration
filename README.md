@@ -9,9 +9,12 @@ npm install armenian-transliteration
 ## Usage
 
 ```javascript
-import { transliterateArmenianText } from "armenian-transliteration";
+import { transliterate } from "armenian-transliteration";
 
 const armenianText = "Հայերեն տեքստ";
-const transliteratedText = transliterateArmenianText(armenianText);
-console.log(transliteratedText); // Output: Hayeren tekst
+const latText = transliterate(armenianText, "en");
+const rusText = transliterate(armenianText, "ru");
+
+console.log(latText); // Hayeren tekst
+console.log(rusText); // Хайерен текст
 ```
