@@ -25,13 +25,13 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Multi-word string with punctuation, uppercase words, numbers, etc.
    * Also shows that 'փ' -> 'п'' and 'շ' -> 'ш'.
    */
-  test("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ. -> Хаястан, ЕРЕВАН, КЕНТРОН, САРЙАН П'., Ш 31, Бн. 16 БН.", () => {
+  test("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ. -> Хаястан, ЕРЕВАН, КЕНТРОН, САРЙАН П., Ш 31, Бн. 16 БН.", () => {
     expect(
       transliterate(
         "Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ.",
         "ru"
       )
-    ).toBe("Хаястан, ЕРЕВАН, КЕНТРОН, САРЙАН П'., Ш 31, Бн. 16 БН.");
+    ).toBe("Хаястан, ЕРЕВАН, КЕНТРОН, САРЙАН П., Ш 31, Бн. 16 БН.");
   });
 
   /**
@@ -218,21 +218,21 @@ describe("Armenian transliteration correctness (Russian)", () => {
 
   /**
    * Verify line breaks are preserved and question mark replaced properly.
-   * Shows that 'Ք' -> 'К'' in some systems,
+   * Shows that 'Ք' -> 'К' in some systems,
    * here we reflect it as "K'" or "К'".
    */
-  test("Բարեւ.\nՔանի՞ անգամ: -> Барев.\nК'ани? ангам:", () => {
+  test("Բարեւ.\nՔանի՞ անգամ: -> Барев.\nКани? ангам:", () => {
     expect(transliterate("Բարեւ.\nՔանի՞ անգամ:", "ru")).toBe(
-      "Барев.\nК'ани? ангам:"
+      "Барев.\nКани? ангам:"
     );
   });
 
   /**
    * Aspirated vs. unaspirated pairs example:
-   * 'փ' -> 'п'', 'պ' -> 'п'.
+   * 'փ' -> 'п', 'պ' -> 'п'.
    */
-  test("Փակ պարկ -> П'ак парк", () => {
-    expect(transliterate("Փակ պարկ", "ru")).toBe("П'ак парк");
+  test("Փակ պարկ -> Пак парк", () => {
+    expect(transliterate("Փակ պարկ", "ru")).toBe("Пак парк");
   });
 
   /**

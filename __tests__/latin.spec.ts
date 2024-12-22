@@ -19,10 +19,10 @@ describe("Armenian transliteration correctness", () => {
   /**
    * Multi-word string with punctuation, uppercase words, numbers, etc.
    */
-  test("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ. -> Hayastan, YEREVAN, KENTRON, SARYAN P'., SH 31, Bn. 16 BN.", () => {
+  test("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ. -> Hayastan, YEREVAN, KENTRON, SARYAN P., SH 31, Bn. 16 BN.", () => {
     expect(
       transliterate("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ.")
-    ).toBe("Hayastan, YEREVAN, KENTRON, SARYAN P'., SH 31, Bn. 16 BN.");
+    ).toBe("Hayastan, YEREVAN, KENTRON, SARYAN P., SH 31, Bn. 16 BN.");
   });
 
   /**
@@ -61,18 +61,18 @@ describe("Armenian transliteration correctness", () => {
   });
 
   /**
-   * Aspirated consonant test: Թ -> T'.
+   * Aspirated consonant test: Թ -> T.
    */
   test("Թեստավորում -> T'estavorum", () => {
-    expect(transliterate("Թեստավորում")).toBe("T'estavorum");
+    expect(transliterate("Թեստավորում")).toBe("Testavorum");
   });
 
   /**
    * Longer multi-word phrase with different letters, including apostrophe for տ’ in context.
    */
-  test("Արմենիայի Հանրապետություն -> Armeniayi Hanrapetut'yun", () => {
+  test("Արմենիայի Հանրապետություն -> Armeniayi Hanrapetutyun", () => {
     expect(transliterate("Արմենիայի Հանրապետություն")).toBe(
-      "Armeniayi Hanrapetut'yun"
+      "Armeniayi Hanrapetutyun"
     );
   });
 
@@ -167,8 +167,8 @@ describe("Armenian transliteration correctness", () => {
   /**
    * Verifies letters mixed with numbers and the 'թ' -> t'.
    */
-  test("Արմենիա2024թ -> Armenia2024t'", () => {
-    expect(transliterate("Արմենիա2024թ")).toBe("Armenia2024t'");
+  test("Արմենիա2024թ -> Armenia2024t", () => {
+    expect(transliterate("Արմենիա2024թ")).toBe("Armenia2024t");
   });
 
   /**
@@ -206,22 +206,22 @@ describe("Armenian transliteration correctness", () => {
   /**
    * Verify line breaks are preserved and question mark replaced properly.
    */
-  test("Բարեւ.\nՔանի՞ անգամ: -> Barev.\nK'ani? angam:", () => {
-    expect(transliterate("Բարեւ.\nՔանի՞ անգամ:")).toBe("Barev.\nK'ani? angam:");
+  test("Բարեւ.\nՔանի՞ անգամ: -> Barev.\nKani? angam:", () => {
+    expect(transliterate("Բարեւ.\nՔանի՞ անգամ:")).toBe("Barev.\nKani? angam:");
   });
 
   /**
-   * Aspirated vs. unaspirated pairs (e.g., պ -> p, փ -> p').
+   * Aspirated vs. unaspirated pairs (e.g., պ -> p, փ -> p).
    */
-  test("Փակ պարկ -> P'ak park", () => {
-    expect(transliterate("Փակ պարկ")).toBe("P'ak park");
+  test("Փակ պարկ -> Pak park", () => {
+    expect(transliterate("Փակ պարկ")).toBe("Pak park");
   });
 
   /**
-   * Check խ -> kh, ղ -> gh, ճ -> ch, չ -> ch', ռ -> r' differences.
+   * Check խ -> kh, ղ -> gh, ճ -> ch, չ -> ch, ռ -> r' differences.
    */
   test("Խաղ չեմ գնում ռեստորան -> Khagh chem gnum restoran", () => {
-    // Example: Խ -> Kh, աղ -> agh, չ -> ch', եմ -> em, ռ -> r'
+    // Example: Խ -> Kh, աղ -> agh, չ -> ch, եմ -> em, ռ -> r
     // If your scheme differs, adapt accordingly.
     expect(transliterate("Խաղ չեմ գնում ռեստորան")).toBe(
       "Khagh chem gnum restoran"
