@@ -68,7 +68,7 @@ describe("Armenian transliteration correctness", () => {
   });
 
   /**
-   * Longer multi-word phrase with different letters, including apostrophe for տ’ in context.
+   * Longer multi-word phrase with different letters, including apostrophe for տ' in context.
    */
   test("Արմենիայի Հանրապետություն -> Armeniayi Hanrapetutyun", () => {
     expect(transliterate("Արմենիայի Հանրապետություն")).toBe(
@@ -251,5 +251,12 @@ describe("Armenian transliteration correctness", () => {
    */
   test("դեռևս -> derevs", () => {
     expect(transliterate("դեռևս")).toBe("derevs");
+  });
+
+  /**
+   * Verifies uppercase Armenian name transliteration.
+   */
+  test("ՏԻՄՈՒՐ -> TIMUR", () => {
+    expect(transliterate("ՏԻՄՈՒՐ")).toBe("TIMUR");
   });
 });
