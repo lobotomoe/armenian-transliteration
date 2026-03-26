@@ -10,7 +10,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Basic letter mapping test: mixed case.
    */
   test("Կենտրոն -> Кентрон", () => {
-    expect(transliterate("Կենտրոն", "ru")).toBe("Кентрон");
+    expect(transliterate("Կենտրոն", { standard: "russian-phonetic" })).toBe("Кентрон");
   });
 
   /**
@@ -18,7 +18,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * (Note: 'Ով' is handled as 'Ов' below—special case in many systems.)
    */
   test("Ոչ -> Воч", () => {
-    expect(transliterate("Ոչ", "ru")).toBe("Воч");
+    expect(transliterate("Ոչ", { standard: "russian-phonetic" })).toBe("Воч");
   });
 
   /**
@@ -29,7 +29,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
     expect(
       transliterate(
         "Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ.",
-        "ru"
+        { standard: "russian-phonetic" }
       )
     ).toBe("Хаястан, ЕРЕВАН, КЕНТРОН, САРЯН П., Ш 31, Бн. 16 БН.");
   });
@@ -38,14 +38,14 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Fully uppercase Armenian -> fully uppercase Russian.
    */
   test("ՄԵՂԵԴԻ -> МЕГЕДИ", () => {
-    expect(transliterate("ՄԵՂԵԴԻ", "ru")).toBe("МЕГЕДИ");
+    expect(transliterate("ՄԵՂԵԴԻ", { standard: "russian-phonetic" })).toBe("МЕГЕДИ");
   });
 
   /**
    * Simple lowercase transliteration.
    */
   test("ուրախ -> урах", () => {
-    expect(transliterate("ուրախ", "ru")).toBe("урах");
+    expect(transliterate("ուրախ", { standard: "russian-phonetic" })).toBe("урах");
   });
 
   /**
@@ -53,21 +53,21 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * here 'Ով' transliterates to 'Ов' instead of 'Вов'.
    */
   test("Ով է այնտեղ։ -> Ов э айнтег.", () => {
-    expect(transliterate("Ով է այնտեղ։", "ru")).toBe("Ов э айнтег.");
+    expect(transliterate("Ով է այնտեղ։", { standard: "russian-phonetic" })).toBe("Ов э айнтег.");
   });
 
   /**
    * Multi-word mixed-case, spacing, and standard letters.
    */
   test("Տիգրան Պետրոսյան -> Тигран Петросян", () => {
-    expect(transliterate("Տիգրան Պետրոսյան", "ru")).toBe("Тигран Петросян");
+    expect(transliterate("Տիգրան Պետրոսյան", { standard: "russian-phonetic" })).toBe("Тигран Петросян");
   });
 
   /**
    * Verifies Շ -> Ш mapping.
    */
   test("Շողեր -> Шогер", () => {
-    expect(transliterate("Շողեր", "ru")).toBe("Шогер");
+    expect(transliterate("Շողեր", { standard: "russian-phonetic" })).toBe("Шогер");
   });
 
   /**
@@ -75,7 +75,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * but here we see the final output as just Т (no apostrophe).
    */
   test("Թեստավորում -> Теставорум", () => {
-    expect(transliterate("Թեստավորում", "ru")).toBe("Теставорум");
+    expect(transliterate("Թեստավորում", { standard: "russian-phonetic" })).toBe("Теставорум");
   });
 
   /**
@@ -83,7 +83,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * including final '-յուն' -> 'ютюн' or similar.
    */
   test("Արմենիայի Հանրապետություն -> Армениайи Ханрапетутюн", () => {
-    expect(transliterate("Արմենիայի Հանրապետություն", "ru")).toBe(
+    expect(transliterate("Արմենիայի Հանրապետություն", { standard: "russian-phonetic" })).toBe(
       "Армениайи Ханрапетутюн"
     );
   });
@@ -92,84 +92,84 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Verifies Շ -> Ш, տ -> т, ո -> о in context.
    */
   test("Մաշտոցի պողոտա -> Маштоци погота", () => {
-    expect(transliterate("Մաշտոցի պողոտա", "ru")).toBe("Маштоци погота");
+    expect(transliterate("Մաշտոցի պողոտա", { standard: "russian-phonetic" })).toBe("Маштоци погота");
   });
 
   /**
    * Verifies single-word starting with և -> "ев".
    */
   test("ևազգի -> евазги", () => {
-    expect(transliterate("ևազգի", "ru")).toBe("евазги");
+    expect(transliterate("ևազգի", { standard: "russian-phonetic" })).toBe("евазги");
   });
 
   /**
    * Verifies two consecutive letters: և + վ.
    */
   test("ևվատ -> евват", () => {
-    expect(transliterate("ևվատ", "ru")).toBe("евват");
+    expect(transliterate("ևվատ", { standard: "russian-phonetic" })).toBe("евват");
   });
 
   /**
    * Verifies initial Ու -> У.
    */
   test("Ուրախ -> Урах", () => {
-    expect(transliterate("Ուրախ", "ru")).toBe("Урах");
+    expect(transliterate("Ուրախ", { standard: "russian-phonetic" })).toBe("Урах");
   });
 
   /**
    * Verifies initial Ո -> Во plus combination ղ -> г, ջ -> ж, ու -> у, յ -> й, ն -> н.
    */
   test("Ողջույն -> Вогжуйн", () => {
-    expect(transliterate("Ողջույն", "ru")).toBe("Вогжуйн");
+    expect(transliterate("Ողջույն", { standard: "russian-phonetic" })).toBe("Вогжуйн");
   });
 
   /**
    * Verifies initial Ե -> Е plus standard letters inside.
    */
   test("Երևան -> Ереван", () => {
-    expect(transliterate("Երևան", "ru")).toBe("Ереван");
+    expect(transliterate("Երևան", { standard: "russian-phonetic" })).toBe("Ереван");
   });
 
   /**
    * Verifies that "ու" is separate when it's its own word, transliterating to "у".
    */
   test("Նոր ու նորից -> Нор у нориц", () => {
-    expect(transliterate("Նոր ու նորից", "ru")).toBe("Нор у нориц");
+    expect(transliterate("Նոր ու նորից", { standard: "russian-phonetic" })).toBe("Нор у нориц");
   });
 
   /**
    * Verifies mid-sentence և -> ев.
    */
   test("Մեզ և ձեզ -> Мез ев дзез", () => {
-    expect(transliterate("Մեզ և ձեզ", "ru")).toBe("Мез ев дзез");
+    expect(transliterate("Մեզ և ձեզ", { standard: "russian-phonetic" })).toBe("Мез ев дзез");
   });
 
   /**
    * Full uppercase transliteration plus question mark for Armenian '՞'.
    */
   test("ՄԱՍՍԵՐԼԻ՞ -> МАССЕРЛИ?", () => {
-    expect(transliterate("ՄԱՍՍԵՐԼԻ՞", "ru")).toBe("МАССЕРЛИ?");
+    expect(transliterate("ՄԱՍՍԵՐԼԻ՞", { standard: "russian-phonetic" })).toBe("МАССЕРЛИ?");
   });
 
   /**
    * Verifies handling of 'Եվ' at the beginning plus punctuation.
    */
   test("Եվս մեկ անգամ! -> Евс мек ангам!", () => {
-    expect(transliterate("Եվս մեկ անգամ!", "ru")).toBe("Евс мек ангам!");
+    expect(transliterate("Եվս մեկ անգամ!", { standard: "russian-phonetic" })).toBe("Евс мек ангам!");
   });
 
   /**
    * Simple question mark replacement.
    */
   test("Ինչու՞ -> Инчу?", () => {
-    expect(transliterate("Ինչու՞", "ru")).toBe("Инчу?");
+    expect(transliterate("Ինչու՞", { standard: "russian-phonetic" })).toBe("Инчу?");
   });
 
   /**
    * Verifies Armenian comma '՝' -> ',' and that other punctuation is preserved.
    */
   test("Այսօր՝ Հայաստանում. -> Айсор, Хаястанум.", () => {
-    expect(transliterate("Այսօր՝ Հայաստանում.", "ru")).toBe(
+    expect(transliterate("Այսօր՝ Հայաստանում.", { standard: "russian-phonetic" })).toBe(
       "Айсор, Хаястанум."
     );
   });
@@ -179,21 +179,21 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * (no apostrophe in final result).
    */
   test("Արմենիա2024թ -> Армениа2024т", () => {
-    expect(transliterate("Արմենիա2024թ", "ru")).toBe("Армениа2024т");
+    expect(transliterate("Արմենիա2024թ", { standard: "russian-phonetic" })).toBe("Армениа2024т");
   });
 
   /**
    * Alphanumeric test: keeping digits and transliterating letters.
    */
   test("Գ3 վարդեր -> Г3 вардер", () => {
-    expect(transliterate("Գ3 վարդեր", "ru")).toBe("Г3 вардер");
+    expect(transliterate("Գ3 վարդեր", { standard: "russian-phonetic" })).toBe("Г3 вардер");
   });
 
   /**
    * Verifies և with a hyphen.
    */
   test("և-ով -> ев-ов", () => {
-    expect(transliterate("և-ով", "ru")).toBe("ев-ов");
+    expect(transliterate("և-ով", { standard: "russian-phonetic" })).toBe("ев-ов");
   });
 
   /**
@@ -201,7 +201,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Each uppercase Armenian block -> uppercase Russian, Latin stays untouched.
    */
   test("ԵՐԵՎԱՆ yerevan ԵՎՐՈՊԱ ԱՇԽԱՐՀ -> ЕРЕВАН yerevan ЕВРОПА АШХАРХ", () => {
-    expect(transliterate("ԵՐԵՎԱՆ yerevan ԵՎՐՈՊԱ ԱՇԽԱՐՀ", "ru")).toBe(
+    expect(transliterate("ԵՐԵՎԱՆ yerevan ԵՎՐՈՊԱ ԱՇԽԱՐՀ", { standard: "russian-phonetic" })).toBe(
       "ЕРЕВАН yerevan ЕВРОПА АШХАРХ"
     );
   });
@@ -211,7 +211,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Also '՞' -> '?' mapping.
    */
   test("Ողջույն!!! Որտեղ՞ ես? -> Вогжуйн!!! Вортег? ес?", () => {
-    expect(transliterate("Ողջույն!!! Որտեղ՞ ես?", "ru")).toBe(
+    expect(transliterate("Ողջույն!!! Որտեղ՞ ես?", { standard: "russian-phonetic" })).toBe(
       "Вогжуйн!!! Вортег? ес?"
     );
   });
@@ -222,7 +222,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * here we reflect it as "K'" or "К'".
    */
   test("Բարեւ.\nՔանի՞ անգամ: -> Барев.\nКани? ангам:", () => {
-    expect(transliterate("Բարեւ.\nՔանի՞ անգամ:", "ru")).toBe(
+    expect(transliterate("Բարեւ.\nՔանի՞ անգամ:", { standard: "russian-phonetic" })).toBe(
       "Барев.\nКани? ангам:"
     );
   });
@@ -232,14 +232,14 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * 'փ' -> 'п', 'պ' -> 'п'.
    */
   test("Փակ պարկ -> Пак парк", () => {
-    expect(transliterate("Փակ պարկ", "ru")).toBe("Пак парк");
+    expect(transliterate("Փակ պարկ", { standard: "russian-phonetic" })).toBe("Пак парк");
   });
 
   /**
    * Check խ -> х, ղ -> г, չ -> ч, ռ -> р, etc.
    */
   test("Խաղ չեմ գնում ռեստորան -> Хаг чем гнум ресторан", () => {
-    expect(transliterate("Խաղ չեմ գնում ռեստորան", "ru")).toBe(
+    expect(transliterate("Խաղ չեմ գնում ռեստորան", { standard: "russian-phonetic" })).toBe(
       "Хаг чем гнум ресторан"
     );
   });
@@ -248,7 +248,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Verify Ո -> Во if word-initial, Օ -> О, etc.
    */
   test("Ոսկի Օր -> Воски Ор", () => {
-    expect(transliterate("Ոսկի Օր", "ru")).toBe("Воски Ор");
+    expect(transliterate("Ոսկի Օր", { standard: "russian-phonetic" })).toBe("Воски Ор");
   });
 
   /**
@@ -256,7 +256,7 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * Demonstrates 'ղ' -> 'г', 'ջ' -> 'ж'.
    */
   test("աղջիկ -> агжик", () => {
-    expect(transliterate("աղջիկ", "ru")).toBe("агжик");
+    expect(transliterate("աղջիկ", { standard: "russian-phonetic" })).toBe("агжик");
   });
 
   /**
@@ -264,6 +264,6 @@ describe("Armenian transliteration correctness (Russian)", () => {
    * 'դեռևս' -> 'деревс'.
    */
   test("դեռևս -> деревс", () => {
-    expect(transliterate("դեռևս", "ru")).toBe("деревс");
+    expect(transliterate("դեռևս", { standard: "russian-phonetic" })).toBe("деревс");
   });
 });

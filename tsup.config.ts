@@ -14,7 +14,7 @@ export default defineConfig([
   },
   {
     entry: ["src/index.ts"],
-    globalName: "artToEnTransliteration",
+    globalName: "armenianTransliteration",
     sourcemap: true,
     platform: "browser",
     minify: true,

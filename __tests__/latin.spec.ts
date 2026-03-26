@@ -197,9 +197,9 @@ describe("Armenian transliteration correctness", () => {
   /**
    * Multiple punctuation, exclamations, and '՞' -> '?' mapping.
    */
-  test("Ողջույն!!! Որտեղ՞ ես? -> Voghjuyn!!! Vortegh? es?", () => {
+  test("Ողjuyn!!! Unds? yes? -> Voghjuyn!!! Vortegh? yes?", () => {
     expect(transliterate("Ողջույն!!! Որտեղ՞ ես?")).toBe(
-      "Voghjuyn!!! Vortegh? es?"
+      "Voghjuyn!!! Vortegh? yes?"
     );
   });
 

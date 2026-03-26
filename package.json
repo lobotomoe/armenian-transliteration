@@ -1,12 +1,18 @@
 {
   "name": "armenian-transliteration",
-  "version": "0.6.0",
-  "description": "Armenian transliteration",
+  "version": "1.0.0",
+  "description": "Multi-standard Armenian transliteration (BGN/PCGN, ISO 9985, Hübschmann-Meillet, ALA-LC, Russian phonetic)",
   "keywords": [
     "armenian",
-    "english",
+    "transliteration",
+    "romanization",
+    "bgn-pcgn",
+    "iso-9985",
+    "hubschmann-meillet",
+    "ala-lc",
+    "cyrillic",
     "russian",
-    "transliteration"
+    "unicode"
   ],
   "bugs": {
     "url": "https://github.com/lobotomoe/armenian-transliteration/issues"
