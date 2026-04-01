@@ -1,7 +1,7 @@
 {
   "name": "armenian-transliteration",
-  "version": "1.0.0",
-  "description": "Multi-standard Armenian transliteration (BGN/PCGN, ISO 9985, Hübschmann-Meillet, ALA-LC, Russian phonetic)",
+  "version": "1.1.0",
+  "description": "Multi-standard Armenian transliteration (BGN/PCGN, ISO 9985, Hübschmann-Meillet, ALA-LC, Russian phonetic, IPA)",
   "keywords": [
     "armenian",
     "transliteration",
@@ -12,6 +12,8 @@
     "ala-lc",
     "cyrillic",
     "russian",
+    "ipa",
+    "phonemic",
     "unicode"
   ],
   "bugs": {

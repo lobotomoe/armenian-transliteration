@@ -174,8 +174,8 @@ describe("integration: full text transliteration", () => {
   });
 
   describe("listStandards", () => {
-    test("returns exactly 5 standards", () => {
-      expect(listStandards()).toHaveLength(5);
+    test("returns exactly 7 standards", () => {
+      expect(listStandards()).toHaveLength(7);
     });
 
     test("includes all expected standard identifiers", () => {
@@ -185,6 +185,8 @@ describe("integration: full text transliteration", () => {
       expect(standards).toContain("hubschmann-meillet");
       expect(standards).toContain("ala-lc");
       expect(standards).toContain("russian-phonetic");
+      expect(standards).toContain("ipa-eastern");
+      expect(standards).toContain("ipa-western");
     });
 
     test("returns a readonly array (does not mutate the registry)", () => {

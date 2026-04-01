@@ -6,6 +6,7 @@ export type {
   Standard,
   LatinStandard,
   CyrillicStandard,
+  IpaStandard,
   Direction,
   TransliterateOptions,
   TransliterationStandard,

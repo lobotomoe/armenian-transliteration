@@ -8,8 +8,11 @@ export type LatinStandard =
 /** Cyrillic-script transliteration standards */
 export type CyrillicStandard = "russian-phonetic";
 
+/** IPA transcription standards */
+export type IpaStandard = "ipa-eastern" | "ipa-western";
+
 /** All supported transliteration standards */
-export type Standard = LatinStandard | CyrillicStandard;
+export type Standard = LatinStandard | CyrillicStandard | IpaStandard;
 
 /** Transliteration direction */
 export type Direction = "from-armenian" | "to-armenian";
@@ -26,7 +29,7 @@ export interface TransliterateOptions {
 export type LetterPosition = "initial" | "medial" | "final" | "isolated";
 
 /** Target script for a standard */
-export type TargetScript = "latin" | "cyrillic";
+export type TargetScript = "latin" | "cyrillic" | "ipa";
 
 /** Context condition for position-dependent mapping rules */
 export interface ContextCondition {
