@@ -34,7 +34,8 @@
  */
 import { transliterate } from "../../src";
 
-const t = (text: string) => transliterate(text, { standard: "hubschmann-meillet" });
+const t = (text: string) =>
+  transliterate(text, { standard: "hubschmann-meillet" });
 
 const B = "\u0562"; // բ — neutral mid-word wrapper
 const mid = (ch: string) => `${B}${ch}${B}`;
@@ -45,44 +46,44 @@ describe("Hübschmann-Meillet standard", () => {
   // ─────────────────────────────────────────────────────────────────────────
   describe("38 lowercase letter mappings (mid-word context)", () => {
     test.each([
-      ["\u0561", "a"],              // ա → a
-      ["\u0562", "b"],              // բ → b
-      ["\u0563", "g"],              // գ → g
-      ["\u0564", "d"],              // դ → d
-      ["\u0565", "e"],              // ե → e (no word-initial rule)
-      ["\u0566", "z"],              // զ → z
-      ["\u0567", "\u0113"],         // է → ē (U+0113)
-      ["\u0568", "\u0259"],         // ը → ə (schwa U+0259 — H-M specific!)
-      ["\u0569", "t\u02BF"],        // թ → tʿ (t + U+02BF)
-      ["\u056A", "\u017E"],         // ժ → ž (U+017E)
-      ["\u056B", "i"],              // ի → i
-      ["\u056C", "l"],              // լ → l
-      ["\u056D", "x"],              // խ → x
-      ["\u056E", "c"],              // ծ → c (plain c — H-M has no dot below!)
-      ["\u056F", "k"],              // կ → k
-      ["\u0570", "h"],              // հ → h
-      ["\u0571", "j"],              // ձ → j
-      ["\u0572", "\u0142"],         // ղ → ł (l with stroke U+0142 — H-M specific!)
-      ["\u0573", "\u010D"],         // ճ → č (U+010D — no dot below unlike ISO)
-      ["\u0574", "m"],              // մ → m
-      ["\u0575", "y"],              // յ → y
-      ["\u0576", "n"],              // ն → n
-      ["\u0577", "\u0161"],         // շ → š (U+0161)
-      ["\u0578", "o"],              // ο → o (no vo rule)
-      ["\u0579", "\u010D\u02BF"],   // չ → čʿ (č U+010D + U+02BF — H-M specific!)
-      ["\u057A", "p"],              // պ → p
-      ["\u057B", "\u01F0"],         // ջ → ǰ (U+01F0)
-      ["\u057C", "\u1E59"],         // ռ → ṙ (U+1E59)
-      ["\u057D", "s"],              // ς → s
-      ["\u057E", "v"],              // β → v
-      ["\u057F", "t"],              // τ → t
-      ["\u0580", "r"],              // ρ → r
-      ["\u0581", "c\u02BF"],        // ց → cʿ (c + U+02BF)
-      ["\u0582", "w"],              // ω → w
-      ["\u0583", "p\u02BF"],        // փ → pʿ (p + U+02BF)
-      ["\u0584", "k\u02BF"],        // ք → kʿ (k + U+02BF)
-      ["\u0585", "\u014D"],         // օ → ō (U+014D, o with macron — H-M specific!)
-      ["\u0586", "f"],              // ֆ → f
+      ["\u0561", "a"], // ա → a
+      ["\u0562", "b"], // բ → b
+      ["\u0563", "g"], // գ → g
+      ["\u0564", "d"], // դ → d
+      ["\u0565", "e"], // ե → e (no word-initial rule)
+      ["\u0566", "z"], // զ → z
+      ["\u0567", "\u0113"], // է → ē (U+0113)
+      ["\u0568", "\u0259"], // ը → ə (schwa U+0259 — H-M specific!)
+      ["\u0569", "t\u02BF"], // թ → tʿ (t + U+02BF)
+      ["\u056A", "\u017E"], // ժ → ž (U+017E)
+      ["\u056B", "i"], // ի → i
+      ["\u056C", "l"], // լ → l
+      ["\u056D", "x"], // խ → x
+      ["\u056E", "c"], // ծ → c (plain c — H-M has no dot below!)
+      ["\u056F", "k"], // կ → k
+      ["\u0570", "h"], // հ → h
+      ["\u0571", "j"], // ձ → j
+      ["\u0572", "\u0142"], // ղ → ł (l with stroke U+0142 — H-M specific!)
+      ["\u0573", "\u010D"], // ճ → č (U+010D — no dot below unlike ISO)
+      ["\u0574", "m"], // մ → m
+      ["\u0575", "y"], // յ → y
+      ["\u0576", "n"], // ն → n
+      ["\u0577", "\u0161"], // շ → š (U+0161)
+      ["\u0578", "o"], // ο → o (no vo rule)
+      ["\u0579", "\u010D\u02BF"], // չ → čʿ (č U+010D + U+02BF — H-M specific!)
+      ["\u057A", "p"], // պ → p
+      ["\u057B", "\u01F0"], // ջ → ǰ (U+01F0)
+      ["\u057C", "\u1E59"], // ռ → ṙ (U+1E59)
+      ["\u057D", "s"], // ς → s
+      ["\u057E", "v"], // β → v
+      ["\u057F", "t"], // τ → t
+      ["\u0580", "r"], // ρ → r
+      ["\u0581", "c\u02BF"], // ց → cʿ (c + U+02BF)
+      ["\u0582", "w"], // ω → w
+      ["\u0583", "p\u02BF"], // փ → pʿ (p + U+02BF)
+      ["\u0584", "k\u02BF"], // ք → kʿ (k + U+02BF)
+      ["\u0585", "\u014D"], // օ → ō (U+014D, o with macron — H-M specific!)
+      ["\u0586", "f"], // ֆ → f
     ])("բ%sβ → b%sb", (ch, expected) => {
       expect(t(mid(ch))).toBe(`b${expected}b`);
     });
@@ -94,44 +95,44 @@ describe("Hübschmann-Meillet standard", () => {
   // ─────────────────────────────────────────────────────────────────────────
   describe("38 uppercase single-letter words", () => {
     test.each([
-      ["\u0531", "A"],              // Ա → A
-      ["\u0532", "B"],              // Բ → B
-      ["\u0533", "G"],              // Γ → G
-      ["\u0534", "D"],              // Δ → D
-      ["\u0535", "E"],              // Ε → E (no YE prefix!)
-      ["\u0536", "Z"],              // Ζ → Z
-      ["\u0537", "\u0112"],         // Η → Ē (U+0112)
-      ["\u0538", "\u018F"],         // Θ → Ə (capital schwa U+018F)
-      ["\u0539", "T\u02BF"],        // Θ → Tʿ
-      ["\u053A", "\u017D"],         // Ι → Ž (U+017D)
-      ["\u053B", "I"],              // Ι → I
-      ["\u053C", "L"],              // Κ → L
-      ["\u053D", "X"],              // Λ → X
-      ["\u053E", "C"],              // Μ → C (plain, no diacritic!)
-      ["\u053F", "K"],              // Ν → K
-      ["\u0540", "H"],              // Ξ → H
-      ["\u0541", "J"],              // Ο → J
-      ["\u0542", "\u0141"],         // Π → Ł (L with stroke U+0141)
-      ["\u0543", "\u010C"],         // Ρ → Č (U+010C, no dot below)
-      ["\u0544", "M"],              // Σ → M
-      ["\u0545", "Y"],              // Τ → Y
-      ["\u0546", "N"],              // Υ → N
-      ["\u0547", "\u0160"],         // Φ → Š (U+0160)
-      ["\u0548", "O"],              // Ο → O (no VO!)
-      ["\u0549", "\u010C\u02BF"],   // Χ → Čʿ (Č + U+02BF)
-      ["\u054A", "P"],              // Ψ → P
-      ["\u054B", "J\u030C"],        // Ω → J̌ (J + combining caron U+030C)
-      ["\u054C", "\u1E58"],         // Ρ → Ṙ (U+1E58, capital R dot above)
-      ["\u054D", "S"],              // Σ → S
-      ["\u054E", "V"],              // Β → V
-      ["\u054F", "T"],              // Τ → T
-      ["\u0550", "R"],              // Υ → R
-      ["\u0551", "C\u02BF"],        // Ω → Cʿ
-      ["\u0552", "W"],              // Ω → W
-      ["\u0553", "P\u02BF"],        // Φ → Pʿ
-      ["\u0554", "K\u02BF"],        // Ψ → Kʿ
-      ["\u0555", "\u014C"],         // Ω → Ō (U+014C, capital O with macron)
-      ["\u0556", "F"],              // Φ → F
+      ["\u0531", "A"], // Ա → A
+      ["\u0532", "B"], // Բ → B
+      ["\u0533", "G"], // Γ → G
+      ["\u0534", "D"], // Δ → D
+      ["\u0535", "E"], // Ε → E (no YE prefix!)
+      ["\u0536", "Z"], // Ζ → Z
+      ["\u0537", "\u0112"], // Η → Ē (U+0112)
+      ["\u0538", "\u018F"], // Θ → Ə (capital schwa U+018F)
+      ["\u0539", "T\u02BF"], // Θ → Tʿ
+      ["\u053A", "\u017D"], // Ι → Ž (U+017D)
+      ["\u053B", "I"], // Ι → I
+      ["\u053C", "L"], // Κ → L
+      ["\u053D", "X"], // Λ → X
+      ["\u053E", "C"], // Μ → C (plain, no diacritic!)
+      ["\u053F", "K"], // Ν → K
+      ["\u0540", "H"], // Ξ → H
+      ["\u0541", "J"], // Ο → J
+      ["\u0542", "\u0141"], // Π → Ł (L with stroke U+0141)
+      ["\u0543", "\u010C"], // Ρ → Č (U+010C, no dot below)
+      ["\u0544", "M"], // Σ → M
+      ["\u0545", "Y"], // Τ → Y
+      ["\u0546", "N"], // Υ → N
+      ["\u0547", "\u0160"], // Φ → Š (U+0160)
+      ["\u0548", "O"], // Ο → O (no VO!)
+      ["\u0549", "\u010C\u02BF"], // Χ → Čʿ (Č + U+02BF)
+      ["\u054A", "P"], // Ψ → P
+      ["\u054B", "J\u030C"], // Ω → J̌ (J + combining caron U+030C)
+      ["\u054C", "\u1E58"], // Ρ → Ṙ (U+1E58, capital R dot above)
+      ["\u054D", "S"], // Σ → S
+      ["\u054E", "V"], // Β → V
+      ["\u054F", "T"], // Τ → T
+      ["\u0550", "R"], // Υ → R
+      ["\u0551", "C\u02BF"], // Ω → Cʿ
+      ["\u0552", "W"], // Ω → W
+      ["\u0553", "P\u02BF"], // Φ → Pʿ
+      ["\u0554", "K\u02BF"], // Ψ → Kʿ
+      ["\u0555", "\u014C"], // Ω → Ō (U+014C, capital O with macron)
+      ["\u0556", "F"], // Φ → F
     ])("%s → %s", (armenian, expected) => {
       expect(t(armenian)).toBe(expected);
     });
@@ -234,7 +235,9 @@ describe("Hübschmann-Meillet standard", () => {
     });
 
     test("Μεζ and Δζεζ (standalone) → Mez ew Dzez", () => {
-      expect(t("\u0544\u0565\u0566 \u0587 \u0534\u0566\u0565\u0566")).toBe("Mez ew Dzez");
+      expect(t("\u0544\u0565\u0566 \u0587 \u0534\u0566\u0565\u0566")).toBe(
+        "Mez ew Dzez",
+      );
     });
   });
 
@@ -262,7 +265,9 @@ describe("Hübschmann-Meillet standard", () => {
 
     test("\u055E → ?", () => {
       // χ(U+0579 չ)→čʿ, ου→ow → "InčʿoW?"
-      expect(t("\u053B\u0576\u0579\u0578\u0582\u055E")).toBe("In\u010D\u02BFow?");
+      expect(t("\u053B\u0576\u0579\u0578\u0582\u055E")).toBe(
+        "In\u010D\u02BFow?",
+      );
     });
 
     test("\u055D → ,", () => {
@@ -302,6 +307,20 @@ describe("Hübschmann-Meillet standard", () => {
       ["\u0561\u0572\u057B\u056B\u056F", "a\u0142\u01F0ik"],
       // Armenia
       ["\u0531\u0580\u0574\u0565\u0576\u056B\u0561", "Armenia"],
+      // inks (himself): ι+ν+κ(U+0584→kʿ=k+U+02BF)+ε(U+0568→ə=U+0259)
+      ["\u056B\u0576\u0584\u0568", "ink\u02BF\u0259"],
+      // karogh (can/able): κ+α+ρ+ο(mid)+ρ(U+0572→ł=U+0142)
+      ["\u056F\u0561\u0580\u0578\u0572", "karo\u0142"],
+      // naev (also): ν+α+and(U+0587→ew)
+      ["\u0576\u0561\u0587", "naew"],
+      // mej (inside): μ+ε+ч(U+057B→ǰ=U+01F0)
+      ["\u0574\u0565\u057B", "me\u01F0"],
+      // te (if/or): θ(U+0569→tʿ=t+U+02BF)+ε
+      ["\u0569\u0565", "t\u02BFe"],
+      // voch (not/no): ο→o+χ(U+0579→čʿ=U+010D+U+02BF)
+      ["\u0578\u0579", "o\u010D\u02BF"],
+      // yes (I): ε→e (no word-initial rule)+ς
+      ["\u0565\u057D", "es"],
     ])('"%s" → "%s"', (armenian, expected) => {
       expect(t(armenian)).toBe(expected);
     });
@@ -313,7 +332,9 @@ describe("Hübschmann-Meillet standard", () => {
   describe("multi-word phrase transliterations", () => {
     test("Nor u norits — ου standalone = ow, ς(U+0581)→cʿ", () => {
       // ν+ο+ρ+ι+ς: cʿ at end → "noricʿ"
-      expect(t("\u0546\u0578\u0580 \u0578\u0582 \u0576\u0578\u0580\u056B\u0581")).toBe("Nor ow noric\u02BF");
+      expect(
+        t("\u0546\u0578\u0580 \u0578\u0582 \u0576\u0578\u0580\u056B\u0581"),
+      ).toBe("Nor ow noric\u02BF");
     });
 
     test("Oski Ōr (Ο→O, Ο+ρ→Ō+r — Ο title-case → Ō)", () => {
@@ -322,7 +343,9 @@ describe("Hübschmann-Meillet standard", () => {
     });
 
     test("Mez ew Dzez (and standalone → ew)", () => {
-      expect(t("\u0544\u0565\u0566 \u0587 \u0534\u0566\u0565\u0566")).toBe("Mez ew Dzez");
+      expect(t("\u0544\u0565\u0566 \u0587 \u0534\u0566\u0565\u0566")).toBe(
+        "Mez ew Dzez",
+      );
     });
   });
 });

@@ -404,8 +404,20 @@ describe("IPA Western Armenian standard", () => {
       ["\u0544\u0565\u0572\u0565\u0564\u056B", "M\u025B\u0281\u025Bt\u02B0i"],
       // Armenia: Α(U+0531)+ρ(U+0580)+μ(U+0574)+ε(U+0565)+ν(U+0576)+ι(U+056B)+α(U+0561)
       // No changed consonants — same as Eastern
-      ["\u0531\u0580\u0574\u0565\u0576\u056B\u0561", "A\u027Em\u025Bnia"],
-    ])('"%s" \u2192 "%s"', (armenian, expected) => {
+      ["\u0531\u0580\u0574\u0565\u0576\u056B\u0561", "A\u027Em\u025Bnia"],      // inks (himself): same consonants as Eastern → ink+U+02B0+U+0259
+      ["\u056B\u0576\u0584\u0568", "ink\u02B0\u0259"],
+      // karogh (can/able): Western κ(U+056F)→ɡ(U+0261), ρ→ɾ, ο(mid)→ɔ, ρ(U+0572)→ʁ
+      ["\u056F\u0561\u0580\u0578\u0572", "\u0261a\u027E\u0254\u0281"],
+      // naev (also): same as Eastern → naɛv
+      ["\u0576\u0561\u0587", "na\u025Bv"],
+      // mej (inside): Western ч(U+057B)→t͡ʃʰ=t+U+0361+U+0283+U+02B0
+      ["\u0574\u0565\u057B", "m\u025Bt\u0361\u0283\u02B0"],
+      // te (if/or): same as Eastern → tʰɛ
+      ["\u0569\u0565", "t\u02B0\u025B"],
+      // voch (not/no): same as Eastern → vɔt͡ʃʰ
+      ["\u0578\u0579", "v\u0254t\u0361\u0283\u02B0"],
+      // yes (I): same as Eastern → jɛs
+      ["\u0565\u057D", "j\u025Bs"],    ])('"%s" \u2192 "%s"', (armenian, expected) => {
       expect(t(armenian)).toBe(expected);
     });
   });

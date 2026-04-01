@@ -6,7 +6,7 @@ export type LatinStandard =
   | "ala-lc";
 
 /** Cyrillic-script transliteration standards */
-export type CyrillicStandard = "russian-phonetic";
+export type CyrillicStandard = "ru-geographic" | "ru-personal";
 
 /** IPA transcription standards */
 export type IpaStandard = "ipa-eastern" | "ipa-western";

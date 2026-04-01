@@ -4,7 +4,7 @@ describe("integration: full text transliteration", () => {
   describe("BGN/PCGN sentences", () => {
     test("simple multi-word sentence", () => {
       expect(transliterate("Ես սիրում եմ Հայաստանը")).toBe(
-        "Yes sirum yem Hayastanə"
+        "Yes sirum yem Hayastanə",
       );
     });
 
@@ -18,13 +18,13 @@ describe("integration: full text transliteration", () => {
 
     test("mixed case words — title + ALL CAPS + lower", () => {
       expect(transliterate("Արարատ Հայաստան ԵՐԵՎԱՆ")).toBe(
-        "Ararat Hayastan YEREVAN"
+        "Ararat Hayastan YEREVAN",
       );
     });
 
     test("sentence with embedded numbers", () => {
       expect(transliterate("Կամուրջ 5, Երևան 0010")).toBe(
-        "Kamurj 5, Yerevan 0010"
+        "Kamurj 5, Yerevan 0010",
       );
     });
 
@@ -38,7 +38,7 @@ describe("integration: full text transliteration", () => {
 
     test("sentence with exclamation and question Armenian marks", () => {
       expect(transliterate("Ողջույն!!! Որտեղ՞ ես?")).toBe(
-        "Voghjuyn!!! Vortegh? yes?"
+        "Voghjuyn!!! Vortegh? yes?",
       );
     });
 
@@ -60,13 +60,13 @@ describe("integration: full text transliteration", () => {
 
     test("multi-word string with punctuation, mixed case and numbers", () => {
       expect(
-        transliterate("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ.")
+        transliterate("Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ."),
       ).toBe("Hayastan, YEREVAN, KENTRON, SARYAN P., SH 31, Bn. 16 BN.");
     });
 
     test("Armenian line-break with question mark", () => {
       expect(transliterate("Բարեւ.\nՔանի՞ անգամ:")).toBe(
-        "Barev.\nKani? angam:"
+        "Barev.\nKani? angam:",
       );
     });
 
@@ -84,12 +84,12 @@ describe("integration: full text transliteration", () => {
     });
   });
 
-  describe("Russian phonetic sentences", () => {
-    const ru = { standard: "russian-phonetic" } as const;
+  describe("Russian geographic sentences", () => {
+    const ru = { standard: "ru-geographic" } as const;
 
     test("simple multi-word sentence", () => {
       expect(transliterate("Ես սիրում եմ Հայաստանը", ru)).toBe(
-        "Ес сирум ем Хаястаны"
+        "Ес сирум ем Хаястаны",
       );
     });
 
@@ -99,13 +99,13 @@ describe("integration: full text transliteration", () => {
 
     test("mixed case — title + ALL CAPS", () => {
       expect(transliterate("Արարատ Հայաստան ԵՐԵՎԱՆ", ru)).toBe(
-        "Арарат Хаястан ЕРЕВАН"
+        "Арарат Хаястан ЕРЕВАН",
       );
     });
 
     test("sentence with embedded numbers", () => {
       expect(transliterate("Կամուրջ 5, Երևան 0010", ru)).toBe(
-        "Камурж 5, Ереван 0010"
+        "Камурдж 5, Ереван 0010",
       );
     });
 
@@ -125,14 +125,14 @@ describe("integration: full text transliteration", () => {
       expect(
         transliterate(
           "Հայաստան, ԵՐԵՎԱՆ, ԿԵՆՏՐՈՆ, ՍԱՐՅԱՆ Փ., Շ 31, Բն. 16 ԲՆ.",
-          ru
-        )
+          ru,
+        ),
       ).toBe("Хаястан, ЕРЕВАН, КЕНТРОН, САРЯН П., Ш 31, Бн. 16 БН.");
     });
 
     test("Armenian line-break with question mark", () => {
       expect(transliterate("Բարեւ.\nՔանի՞ անգամ:", ru)).toBe(
-        "Барев.\nКани? ангам:"
+        "Барев.\nКани? ангам:",
       );
     });
 
@@ -155,8 +155,8 @@ describe("integration: full text transliteration", () => {
       expect(t("Երևան")).toBe("Yerevan");
     });
 
-    test("factory for russian-phonetic standard works", () => {
-      const t = createTransliterator({ standard: "russian-phonetic" });
+    test("factory for ru-geographic standard works", () => {
+      const t = createTransliterator({ standard: "ru-geographic" });
       expect(t("Հայաստան")).toBe("Хаястан");
       expect(t("Երևան")).toBe("Ереван");
     });
@@ -167,15 +167,15 @@ describe("integration: full text transliteration", () => {
     });
 
     test("factory throws immediately for to-armenian direction", () => {
-      expect(() =>
-        createTransliterator({ direction: "to-armenian" })
-      ).toThrow("Reverse transliteration (to-armenian) is not yet implemented");
+      expect(() => createTransliterator({ direction: "to-armenian" })).toThrow(
+        "Reverse transliteration (to-armenian) is not yet implemented",
+      );
     });
   });
 
   describe("listStandards", () => {
-    test("returns exactly 7 standards", () => {
-      expect(listStandards()).toHaveLength(7);
+    test("returns exactly 8 standards", () => {
+      expect(listStandards()).toHaveLength(8);
     });
 
     test("includes all expected standard identifiers", () => {
@@ -184,7 +184,8 @@ describe("integration: full text transliteration", () => {
       expect(standards).toContain("iso-9985");
       expect(standards).toContain("hubschmann-meillet");
       expect(standards).toContain("ala-lc");
-      expect(standards).toContain("russian-phonetic");
+      expect(standards).toContain("ru-geographic");
+      expect(standards).toContain("ru-personal");
       expect(standards).toContain("ipa-eastern");
       expect(standards).toContain("ipa-western");
     });
@@ -270,9 +271,9 @@ describe("integration: full text transliteration", () => {
       expect(transliterate("ձ", { standard: "iso-9985" })).toBe("j");
     });
 
-    test("BGN/PCGN and russian-phonetic produce scripts of different type", () => {
+    test("BGN/PCGN and ru-geographic produce scripts of different type", () => {
       const latin = transliterate("Հայաստան");
-      const cyrillic = transliterate("Հայաստան", { standard: "russian-phonetic" });
+      const cyrillic = transliterate("Հայաստան", { standard: "ru-geographic" });
       expect(latin).toBe("Hayastan");
       expect(cyrillic).toBe("Хаястан");
       expect(latin).not.toBe(cyrillic);
@@ -281,7 +282,9 @@ describe("integration: full text transliteration", () => {
     test("ALA-LC ք → kʻ, HM ք → kʿ, BGN ք → k", () => {
       expect(transliterate("ք")).toBe("k");
       expect(transliterate("ք", { standard: "ala-lc" })).toBe("k\u02BB");
-      expect(transliterate("ք", { standard: "hubschmann-meillet" })).toBe("k\u02BF");
+      expect(transliterate("ք", { standard: "hubschmann-meillet" })).toBe(
+        "k\u02BF",
+      );
     });
   });
 });

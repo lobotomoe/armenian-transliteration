@@ -1,6 +1,6 @@
 # Armenian Transliteration
 
-Multi-standard Armenian transliteration library with IPA phonemic transcription. Supports 7 transliteration standards with full type safety and 1185 tests.
+Multi-standard Armenian transliteration library with IPA phonemic transcription. Supports 8 transliteration standards with full type safety and 1325 tests.
 
 ## Installation
 
@@ -26,8 +26,11 @@ transliterate("Երևան", { standard: "hubschmann-meillet" });
 // ALA-LC (Library of Congress)
 transliterate("Երևան", { standard: "ala-lc" });
 
-// Russian phonetic
-transliterate("Երևան", { standard: "russian-phonetic" });  // "Ереван"
+// Russian geographic names (Кузьмина–Туманян 1974)
+transliterate("Երևան", { standard: "ru-geographic" });  // "Ереван"
+
+// Russian personal names (Вартапетян)
+transliterate("Հակոբ", { standard: "ru-personal" });    // "Акоб"
 
 // IPA phonemic transcription (Western Armenian)
 transliterate("Հայաստան", { standard: "ipa-western" });  // "Hajasdan"
@@ -36,22 +39,23 @@ transliterate("Հայաստան", { standard: "ipa-western" });  // "Hajasdan"
 transliterate("Հայաստան", { standard: "ipa-eastern" });  // "Hajastan"
 
 // Factory for repeated use
-const toRussian = createTransliterator({ standard: "russian-phonetic" });
+const toRussian = createTransliterator({ standard: "ru-geographic" });
 toRussian("Հայաստան");  // "Хаястан"
 toRussian("Երևան");     // "Ереван"
 ```
 
 ## Supported Standards
 
-| Standard | ID | Target | Reversible | Description |
-|---|---|---|---|---|
-| BGN/PCGN | `bgn-pcgn` | Latin | No | US/UK geographic names (default) |
-| ISO 9985 | `iso-9985` | Latin | Yes | International standard with diacritics |
-| Hübschmann-Meillet | `hubschmann-meillet` | Latin | Yes | Classical academic system |
-| ALA-LC | `ala-lc` | Latin | No | Library of Congress |
-| Russian Phonetic | `russian-phonetic` | Cyrillic | No | Phonetic transcription to Russian |
-| IPA Western | `ipa-western` | IPA | No | Phonemic transcription (Western Armenian) |
-| IPA Eastern | `ipa-eastern` | IPA | No | Phonemic transcription (Eastern Armenian) |
+| Standard           | ID                   | Target   | Reversible | Description                               |
+| ------------------ | -------------------- | -------- | ---------- | ----------------------------------------- |
+| BGN/PCGN           | `bgn-pcgn`           | Latin    | No         | US/UK geographic names (default)          |
+| ISO 9985           | `iso-9985`           | Latin    | Yes        | International standard with diacritics    |
+| Hübschmann-Meillet | `hubschmann-meillet` | Latin    | Yes        | Classical academic system                 |
+| ALA-LC             | `ala-lc`             | Latin    | No         | Library of Congress                       |
+| Russian Geographic | `ru-geographic`      | Cyrillic | No         | Geographic names (Кузьмина–Туманян 1974)  |
+| Russian Personal   | `ru-personal`        | Cyrillic | No         | Personal names (Вартапетян)               |
+| IPA Western        | `ipa-western`        | IPA      | No         | Phonemic transcription (Western Armenian) |
+| IPA Eastern        | `ipa-eastern`        | IPA      | No         | Phonemic transcription (Eastern Armenian) |
 
 ## API
 
@@ -73,11 +77,11 @@ Returns an array of all supported standard IDs.
 
 ## Features
 
-- **7 transliteration standards** — BGN/PCGN, ISO 9985, Hübschmann-Meillet, ALA-LC, Russian phonetic, IPA (Western & Eastern Armenian)
+- **8 transliteration standards** — BGN/PCGN, ISO 9985, Hübschmann-Meillet, ALA-LC, Russian geographic, Russian personal, IPA (Western & Eastern Armenian)
 - **Declarative standard definitions** — each standard is a data object, not imperative code
 - **Proper tokenizer** — no temporary Unicode symbol hacks
 - **Case preservation** — uppercase, lowercase, and title case handled correctly
 - **Full Unicode support** — Armenian ligatures (U+FB13-FB17), punctuation, mixed scripts
 - **Type-safe** — strict TypeScript, zero `any` types, zero type assertions
-- **1185 tests** — unit, per-standard, integration, edge cases, and formal model verification
+- **1325 tests** — unit, per-standard, integration, edge cases, and formal model verification
 - **Tree-shakeable** — ESM, CJS, and IIFE builds (16KB minified)

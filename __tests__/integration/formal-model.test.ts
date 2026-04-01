@@ -1,18 +1,28 @@
-import { bgnPcgn } from '../../src/standards/latin/bgn-pcgn.js';
-import { iso9985 } from '../../src/standards/latin/iso-9985.js';
-import { hubschmannMeillet } from '../../src/standards/latin/hubschmann-meillet.js';
-import { alaLc } from '../../src/standards/latin/ala-lc.js';
-import { russianPhonetic } from '../../src/standards/cyrillic/russian-phonetic.js';
-import type { TransliterationStandard } from '../../src/types.js';
+import { bgnPcgn } from "../../src/standards/latin/bgn-pcgn.js";
+import { iso9985 } from "../../src/standards/latin/iso-9985.js";
+import { hubschmannMeillet } from "../../src/standards/latin/hubschmann-meillet.js";
+import { alaLc } from "../../src/standards/latin/ala-lc.js";
+import { ruGeographic } from "../../src/standards/cyrillic/ru-geographic.js";
+import { ruPersonal } from "../../src/standards/cyrillic/ru-personal.js";
+import type { TransliterationStandard } from "../../src/types.js";
 
-const standards: TransliterationStandard[] = [bgnPcgn, iso9985, hubschmannMeillet, alaLc, russianPhonetic];
-const expectedLetters = Array.from({length: 38}, (_, i) => String.fromCodePoint(0x0561 + i));
+const standards: TransliterationStandard[] = [
+  bgnPcgn,
+  iso9985,
+  hubschmannMeillet,
+  alaLc,
+  ruGeographic,
+  ruPersonal,
+];
+const expectedLetters = Array.from({ length: 38 }, (_, i) =>
+  String.fromCodePoint(0x0561 + i),
+);
 
 describe("formal model completeness", () => {
   for (const std of standards) {
     describe(std.id, () => {
       test("covers all 38 Armenian letters", () => {
-        const mapped = new Set(std.charMappings.map(m => m.armenian));
+        const mapped = new Set(std.charMappings.map((m) => m.armenian));
         for (const letter of expectedLetters) {
           expect(mapped.has(letter)).toBe(true);
         }
@@ -28,7 +38,10 @@ describe("formal model completeness", () => {
       });
 
       test("all ambiguous targets have reverseDefault", () => {
-        const targetGroups = new Map<string, typeof std.charMappings[number][]>();
+        const targetGroups = new Map<
+          string,
+          (typeof std.charMappings)[number][]
+        >();
         for (const m of std.charMappings) {
           const group = targetGroups.get(m.target) ?? [];
           group.push(m);
@@ -36,10 +49,15 @@ describe("formal model completeness", () => {
         }
         for (const [target, group] of targetGroups) {
           if (group.length > 1) {
-            const hasDefault = group.some(m => m.reverseDefault === true);
-            const hasExplicitFalse = group.every(m => m.reverseDefault !== undefined);
+            const hasDefault = group.some((m) => m.reverseDefault === true);
+            const hasExplicitFalse = group.every(
+              (m) => m.reverseDefault !== undefined,
+            );
             expect({ target, hasDefault, hasExplicitFalse }).toEqual(
-              expect.objectContaining({ hasDefault: true, hasExplicitFalse: true })
+              expect.objectContaining({
+                hasDefault: true,
+                hasExplicitFalse: true,
+              }),
             );
           }
         }
@@ -55,7 +73,7 @@ describe("formal model completeness", () => {
 
       test("sequenceMappings ordered longest-first or equal", () => {
         for (let i = 1; i < std.sequenceMappings.length; i++) {
-          const prev = Array.from(std.sequenceMappings[i-1]!.armenian).length;
+          const prev = Array.from(std.sequenceMappings[i - 1]!.armenian).length;
           const curr = Array.from(std.sequenceMappings[i]!.armenian).length;
           expect(prev).toBeGreaterThanOrEqual(curr);
         }
@@ -66,12 +84,21 @@ describe("formal model completeness", () => {
         for (const m of allMappings) {
           if (m.contextRules) {
             for (const rule of m.contextRules) {
-              const validKeys = new Set(['wordInitial', 'followedBy', 'notFollowedBy', 'precededBy', 'position']);
+              const validKeys = new Set([
+                "wordInitial",
+                "followedBy",
+                "notFollowedBy",
+                "precededBy",
+                "position",
+              ]);
               for (const key of Object.keys(rule.condition)) {
                 expect(validKeys.has(key)).toBe(true);
               }
-              expect(typeof rule.target).toBe('string');
-              expect(rule.target.length).toBeGreaterThan(0);
+              expect(typeof rule.target).toBe("string");
+              // empty target ("omit") is only valid for non-reversible standards
+              if (rule.target.length === 0) {
+                expect(std.reversible).toBe(false);
+              }
             }
           }
         }
