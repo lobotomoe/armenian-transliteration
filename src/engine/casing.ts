@@ -34,17 +34,22 @@ function isTokenUppercase(token: Token): boolean {
 
 /**
  * Determine the casing pattern of a word from its constituent tokens.
- * A "word" is a consecutive run of Armenian tokens.
+ * A "word" is a consecutive run of Armenian tokens, possibly with
+ * embedded in-word diacritic punctuation (which has no casing and is
+ * skipped here).
  */
 export function detectWordCasing(wordTokens: readonly Token[]): CasingPattern {
-  if (wordTokens.length === 0) return "lower";
+  const letterTokens = wordTokens.filter(
+    (t) => t.kind === "armenian_letter" || t.kind === "armenian_sequence",
+  );
+  if (letterTokens.length === 0) return "lower";
 
-  const allUpper = wordTokens.every(isTokenUppercase);
+  const allUpper = letterTokens.every(isTokenUppercase);
   if (allUpper) return "upper";
 
-  // Check if first token starts with uppercase
-  const firstToken = wordTokens[0];
-  if (firstToken && isTokenUppercase(firstToken)) return "title";
+  // Check if first letter token starts with uppercase
+  const firstLetter = letterTokens[0];
+  if (firstLetter && isTokenUppercase(firstLetter)) return "title";
 
   return "lower";
 }

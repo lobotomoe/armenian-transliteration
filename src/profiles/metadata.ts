@@ -258,20 +258,15 @@ const canonicalProfiles = {
     id: "ipa-eastern",
     canonicalId: "ipa-eastern",
     status: "canonical",
-    label: "Eastern Armenian IPA",
+    label: "Eastern Armenian IPA (broad phonemic, Tier 1)",
     targetLanguage: null,
     targetScript: "ipa",
     scriptCode: "IPA",
     domain: "phonemic",
-    authority: "Standard Eastern Armenian phonemic inventory",
+    authority:
+      "Standard Eastern Armenian — broad phonemic transcription per Dum-Tragut 2009 and JIPA 2024. Tier 1: strict orthography → phoneme, no allophonic detail.",
     aliases: [],
     sources: [
-      {
-        title:
-          "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
-        kind: "scholarly-system",
-        year: 1998,
-      },
       {
         title:
           "Jasmine Dum-Tragut, Armenian: Modern Eastern Armenian, London Oriental and African Language Library 14, Amsterdam: John Benjamins, 2009",
@@ -279,31 +274,60 @@ const canonicalProfiles = {
         year: 2009,
       },
       {
-        title: "Armenian language — IPA inventory, Wikipedia",
-        kind: "secondary-reference",
-        url: "https://en.wikipedia.org/wiki/Help:IPA/Armenian",
+        title:
+          "Seyfarth, Dolatian, Guekguezian, Kelly & Toparlak (2024). Armenian (Yerevan Eastern and Beirut Western). Journal of the International Phonetic Association 54(1): 445–478",
+        kind: "scholarly-system",
+        year: 2024,
+        url: "https://doi.org/10.1017/S0025100323000130",
+      },
+      {
+        title:
+          "Hossep Dolatian, Armenian Phonology and Phonetics (Glottothèque lecture series, 2022)",
+        kind: "scholarly-system",
+        year: 2022,
+      },
+      {
+        title:
+          "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
+        kind: "scholarly-system",
+        year: 1998,
       },
     ],
     notes: [
       "Broad phonemic transcription of Standard Eastern Armenian.",
-      "Word-initial 'ե → jɛ' (yotation); word-initial 'ո → vɔ' except before vowels or վ.",
-      "Aspirated stops/affricates use U+02B0 MODIFIER LETTER SMALL H (ʰ).",
-      "Affricates use U+0361 COMBINING DOUBLE INVERTED BREVE (tie bar): t͡s, d͡z, t͡ʃ, d͡ʒ.",
-      "ղ → ʁ (uvular trill/fricative); ր → ɾ (tap); ռ → r (trill).",
+      "Three-way stop/affricate contrast: voiced (բ դ գ ձ ջ) / voiceless unaspirated (պ տ կ ծ ճ) / voiceless aspirated (թ ք փ ց չ).",
+      "Open back unrounded /ɑ/ (not /a/) per JIPA 2024: 446.",
+      "Word-initial yotation: ե → /je/, ո → /vo/ with ո + վ → /o/ exception (ով family).",
+      "ղ → /ʁ/, ր → /ɾ/ (tap), ռ → /r/ (trill — distinction preserved in Yerevan EA).",
+      "Excludes allophonic detail (stress, schwa epenthesis, regressive ղ/վ devoicing, word-final devoicing, post-nasal aspiration, -ությ- palatalization). See docs/LINGUISTIC_RATIONALE.md.",
     ],
   },
   "ipa-western": {
     id: "ipa-western",
     canonicalId: "ipa-western",
     status: "canonical",
-    label: "Western Armenian IPA",
+    label: "Standard Western Armenian IPA (broad phonemic, Tier 1)",
     targetLanguage: null,
     targetScript: "ipa",
     scriptCode: "IPA",
     domain: "phonemic",
-    authority: "Standard Western Armenian phonemic inventory",
+    authority:
+      "Standard Western Armenian — broad phonemic transcription per JIPA 2024 and Dolatian 2022. Standard Western retains aspiration on թ ք փ ց չ.",
     aliases: [],
     sources: [
+      {
+        title:
+          "Seyfarth, Dolatian, Guekguezian, Kelly & Toparlak (2024). Armenian (Yerevan Eastern and Beirut Western). Journal of the International Phonetic Association 54(1): 445–478",
+        kind: "scholarly-system",
+        year: 2024,
+        url: "https://doi.org/10.1017/S0025100323000130",
+      },
+      {
+        title:
+          "Hossep Dolatian, Armenian Phonology and Phonetics (Glottothèque lecture series, 2022)",
+        kind: "scholarly-system",
+        year: 2022,
+      },
       {
         title:
           "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
@@ -312,21 +336,18 @@ const canonicalProfiles = {
       },
       {
         title:
-          "Michele Sigler, Specificity and agreement in Standard Western Armenian, MIT PhD thesis, 1996",
+          "Luc Baronian, On the diachrony of Armenian stops (in Sayeed & Vaux, eds.), 2017",
         kind: "scholarly-system",
-        year: 1996,
-      },
-      {
-        title: "Western Armenian — sound system, Wikipedia",
-        kind: "secondary-reference",
-        url: "https://en.wikipedia.org/wiki/Western_Armenian#Phonology",
+        year: 2017,
       },
     ],
     notes: [
       "Broad phonemic transcription of Standard Western Armenian.",
-      "Western collapses the three-way East stop/affricate contrast into a two-way contrast (voiced/aspirated): East voiced (բ գ դ ձ ջ) → West aspirated (pʰ kʰ tʰ t͡sʰ t͡ʃʰ); East voiceless unaspirated (պ կ տ ծ ճ) → West voiced (b ɡ d d͡z d͡ʒ).",
-      "Aspirated series (թ չ ց փ ք) is unchanged from East.",
-      "Word-initial yotation rules (ե → jɛ) and (ո → vɔ except before vowels/վ) are preserved.",
+      "W1 voicing collapse: Eastern voiced (բ գ դ ձ ջ) → Western aspirated (/pʰ kʰ tʰ t͡sʰ t͡ʃʰ/); Eastern voiceless unaspirated (պ կ տ ծ ճ) → Western voiced (/b ɡ d d͡z d͡ʒ/). Aspirated series (թ ք փ ց չ) retained.",
+      "Word-initial yotation rules same as Eastern.",
+      "Rhotic merger: ր and ռ both → /ɾ/ in Standard Western (JIPA 2024: 459).",
+      "W3 phonotactic: sibilant + plain stop (ստ սպ սկ շտ շպ շկ) stays voiceless /st sp sk ʃt ʃp ʃk/.",
+      "Excludes Western-specific allophonic detail (progressive devoicing, schwa epenthesis, sibilant-adjacent deaspiration, յու → ʏ post-consonant). See docs/LINGUISTIC_RATIONALE.md.",
     ],
   },
 } as const satisfies Record<Standard, ProfileMetadata>;

@@ -41,11 +41,13 @@ transliterate("Հակոբ", { standard: "ru-proper-vartapetyan-1961" }); // "А�
 // Russian Cyrillic transcription for common Eastern Armenian vocabulary
 transliterate("համար", { standard: "ru-phonetic-eastern" }); // "хамар"
 
-// IPA phonemic transcription (Western Armenian)
-transliterate("Հայաստան", { standard: "ipa-western" });  // "Hajasdan"
-
 // IPA phonemic transcription (Eastern Armenian)
-transliterate("Հայաստան", { standard: "ipa-eastern" });  // "Hajastan"
+transliterate("Երևան", { standard: "ipa-eastern" });  // "Jeɾevɑn"
+transliterate("Տիգրան", { standard: "ipa-eastern" }); // "Tiɡɾɑn"
+
+// IPA phonemic transcription (Standard Western Armenian) — W1 voicing collapse
+transliterate("Երևան", { standard: "ipa-western" });  // "Jeɾevɑn"
+transliterate("Տիգրան", { standard: "ipa-western" }); // "Dikʰɾɑn"
 
 // Factory for repeated use
 const toRussian = createTransliterator({ standard: "ru-geo-kt-1974" });
@@ -68,8 +70,8 @@ profiles["ru-proper-vartapetyan-1961"].domain; // "proper-names"
 | Russian Geographic RA 2011 | `ru-geo-ra-2011` | Cyrillic | No         | Geographic names (Republic of Armenia 2011) |
 | Russian Proper Names Vartapetyan 1961 | `ru-proper-vartapetyan-1961` | Cyrillic | No         | Proper names: given names, surnames, geographic names |
 | Russian Phonetic Eastern | `ru-phonetic-eastern` | Cyrillic | No         | Common-vocabulary Cyrillic transcription   |
-| IPA Western        | `ipa-western`        | IPA      | No         | Phonemic transcription (Western Armenian) |
-| IPA Eastern        | `ipa-eastern`        | IPA      | No         | Phonemic transcription (Eastern Armenian) |
+| IPA Western        | `ipa-western`        | IPA      | No         | Broad phonemic (Standard Western Armenian) |
+| IPA Eastern        | `ipa-eastern`        | IPA      | No         | Broad phonemic (Standard Eastern Armenian) |
 
 ## Source Notes
 
@@ -81,6 +83,7 @@ profiles["ru-proper-vartapetyan-1961"].domain; // "proper-names"
 - `ru-geo-ra-2011` follows the Republic of Armenia Government decision N 220-N for RA geographic names.
 - `ru-proper-vartapetyan-1961` follows Vartapetyan's 1961 reference for Armenian given names, surnames, and geographic names; Kazumyan 1990, Toshyan 1962, and the Armenian-Russian practical transcription article are useful secondary cross-checks, but not treated as original standard sources.
 - `ru-phonetic-eastern` is a package profile for learner-facing common vocabulary, not an official name-transfer standard.
+- **IPA** (`ipa-eastern`, `ipa-western`) profiles target **Tier 1 broad phonemic** — strict orthography → phoneme mapping. Every rule is attested in Dum-Tragut (2009) and JIPA 2024 (Seyfarth, Dolatian, Guekguezian, Kelly & Toparlak), cross-checked against Dolatian 2022 and Vaux 1998. Standard Western retains aspiration on թ ք փ ց չ (unlike Wiktionary's algorithm, which strips it — incorrectly per JIPA 2024: 447–448). Lexicalized and allophonic detail (stress placement, schwa epenthesis, regressive ղ/վ devoicing, word-final devoicing, post-nasal aspiration, suffix palatalization, Western progressive devoicing, յու → /ʏ/ glide fronting) is deferred to future narrow-phonetic profiles. See [`docs/LINGUISTIC_RATIONALE.md`](docs/LINGUISTIC_RATIONALE.md) for the rule-by-rule citation table and [`tools/ipa-conformance/`](tools/ipa-conformance/) for the Wiktionary conformance harness with annotated divergences (run via `pnpm run ipa-conformance`).
 
 ## Profiles
 

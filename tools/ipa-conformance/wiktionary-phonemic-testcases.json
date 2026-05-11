@@ -1,0 +1,157 @@
+{
+  "source": "https://en.wiktionary.org/wiki/Module:hy-pronunciation/testcases",
+  "function": "phonemic_IPA",
+  "note": "Wiktionary's `phonemic_IPA` algorithm mixes phonemic and phonetic rules (cluster devoicing, schwa epenthesis, aspiration stripping in Western). Our v3 profiles implement strict Tier 1 phonemic transcription per Dum-Tragut 2009 and JIPA 2024. Cases marked `divergence_reason` are deliberate, documented divergences from Wiktionary; they are NOT regressions.",
+  "divergence_categories": {
+    "regressive_devoicing": "Tier 2 morphophonological rule (ղ → χ, վ → f before voiceless). Dum-Tragut 2009: 22 explicitly states these rules are not strict and general. Excluded from phonemic profile.",
+    "lexical_devoicing": "Lexically restricted to a closed word list (հարավ, ավտո, նավթ per Dum-Tragut 2009: 30). Not a productive rule. Excluded.",
+    "suffix_palatalization": "The -ությ- → -ut͡sʰj rule (Wiktionary-only). Dum-Tragut 2009: 35 explicitly transcribes the suffix as [utʰjun]. Excluded.",
+    "western_aspiration_strip": "Wiktionary's broad phonemic strips Western aspiration on թ ք փ ց չ. JIPA 2024: 447-448 and Dolatian 2022 confirm Standard Western RETAINS aspiration. We retain it.",
+    "western_progressive_devoicing": "Beirut-specific morphophonological rule (JIPA 2024: 458-459). Applies in derived environments only, not as a blind phonotactic rule. Excluded.",
+    "schwa_epenthesis": "Tier 2 phonetic-level epenthesis (Dum-Tragut 2009: 30-35). Excluded.",
+    "yu_to_y_glide": "Western յու → ʏ post-consonant. Documented as variable per Dolatian 2022 and JIPA 2024: 461. Not implemented; documented gap.",
+    "ia_to_ja_glide": "Wiktionary's իա → /jɑ/ glide formation. Phonetic-level, not in primary sources as a phonemic rule."
+  },
+  "cases": [
+    { "armenian": "հավ", "east": "hɑv" },
+    { "armenian": "շուն", "east": "ʃun" },
+    { "armenian": "կաթիլ", "east": "kɑtʰil" },
+    { "armenian": "մոծակ", "east": "mot͡sɑk" },
+    { "armenian": "ուխտ", "east": "uχt" },
+    { "armenian": "Գուդաու՛թա", "east": "ɡudɑutʰɑ" },
+    { "armenian": "էշ", "east": "eʃ" },
+    { "armenian": "մանըր", "east": "mɑnəɾ" },
+    { "armenian": "աստըղ", "east": "ɑstəʁ" },
+    { "armenian": "ղըրղը՛զ", "east": "ʁəɾʁəz" },
+    { "armenian": "երակ", "east": "jeɾɑk" },
+    { "armenian": "անկարելի", "east": "ɑnkɑɾeli" },
+    { "armenian": "Մըկըրտիչ", "east": "məkəɾtit͡ʃʰ" },
+    { "armenian": "Աննա", "east": "ɑnnɑ" },
+    { "armenian": "մի՛թե", "east": "mitʰe" },
+    { "armenian": "պաչիկ", "east": "pɑt͡ʃʰik" },
+    { "armenian": "Ա՛նգլիա", "east": "ɑnɡliɑ" },
+    { "armenian": "Պրա՛հա", "east": "pɾɑhɑ" },
+    { "armenian": "ովասիս", "east": "ovɑsis" },
+    { "armenian": "բանեցնել", "east": "bɑnet͡sʰnel" },
+    { "armenian": "ափսուրդ", "east": "ɑpʰsuɾd" },
+    { "armenian": "հանձնել", "east": "hɑnd͡znel" },
+    { "armenian": "Սեբեոս", "east": "sebeos" },
+    { "armenian": "յուան", "east": "juɑn" },
+    { "armenian": "քաոս", "east": "kʰɑos" },
+    { "armenian": "թիակ", "east": "tʰiɑk" },
+    {
+      "armenian": "մյուս",
+      "east": "mjus",
+      "west": "mʏs",
+      "west_divergence_reason": "yu_to_y_glide"
+    },
+    { "armenian": "հայուհի", "east": "hɑjuhi", "west": "hɑjuhi" },
+    {
+      "armenian": "Կույումջյան",
+      "east": "kujumd͡ʒjɑn",
+      "west": "ɡujumt͡ʃjɑn",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "որթեգ(ը)րում",
+      "east": "voɾtʰeɡ(ə)ɾum",
+      "west": "voɾtek(ə)ɾum",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "բացվածք",
+      "east": "bɑt͡sʰvɑt͡skʰ",
+      "west": "pɑt͡svɑd͡zk",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "ամուսնացնել",
+      "east": "ɑmusnɑt͡sʰnel",
+      "west": "ɑmusnɑt͡sənel",
+      "west_divergence_reason": "schwa_epenthesis"
+    },
+    {
+      "armenian": "գովք",
+      "east": "ɡovkʰ",
+      "west": "kovk",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "ծիծաղկոտ",
+      "east": "t͡sit͡sɑχkot",
+      "west": "d͡zid͡zɑʁɡod",
+      "east_divergence_reason": "regressive_devoicing",
+      "west_divergence_reason": "western_progressive_devoicing"
+    },
+    {
+      "armenian": "աղտ",
+      "east": "ɑχt",
+      "west": "ɑʁd",
+      "east_divergence_reason": "regressive_devoicing"
+    },
+    { "armenian": "ախպար", "east": "ɑχpɑɾ", "west": "ɑχbɑɾ" },
+    {
+      "armenian": "Կովկաս",
+      "east": "kofkɑs",
+      "west": "ɡovɡɑs",
+      "east_divergence_reason": "lexical_devoicing"
+    },
+    {
+      "armenian": "հըրեշտակ",
+      "east": "həɾeʃtɑk",
+      "west": "həɾeʃdɑɡ",
+      "west_divergence_reason": "western_progressive_devoicing"
+    },
+    { "armenian": "ֆըշշալ", "east": "fəʃʃɑl", "west": "fəʃʃɑl" },
+    {
+      "armenian": "բրոունյան",
+      "east": "bɾounjɑn",
+      "west": "pɾounjɑn",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "օքտագործում",
+      "east": "okʰtɑɡoɾt͡sum",
+      "west": "okdɑkoɾd͡zum",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    { "armenian": "օրհնյալ", "east": "oɾhnjɑl", "west": "oɾhnjɑl" },
+    {
+      "armenian": "հավատք",
+      "east": "hɑvɑtkʰ",
+      "west": "hɑvɑdk",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "վատթար",
+      "east": "vɑttʰɑɾ",
+      "west": "vɑttɑɾ",
+      "west_divergence_reason": "western_aspiration_strip"
+    },
+    {
+      "armenian": "անկախություն",
+      "east": "ɑnkɑχut͡sʰjun",
+      "west": "ɑnɡɑχutʏn",
+      "east_divergence_reason": "suffix_palatalization",
+      "west_divergence_reason": "yu_to_y_glide"
+    },
+    {
+      "armenian": "շինանյութ",
+      "east": "ʃinɑnjutʰ",
+      "west": "ʃinɑnʏt",
+      "west_divergence_reason": "yu_to_y_glide"
+    },
+    { "armenian": "ոչ ոք", "east": "vot͡ʃʰ vokʰ" },
+    { "armenian": "ասվյա", "east": "ɑsvjɑ" },
+    { "armenian": "տարր", "east": "tɑɾɾ" },
+    { "armenian": "ստանալ", "east": "stɑnɑl", "west": "stɑnɑl" },
+    {
+      "armenian": "բամիա",
+      "east": "bɑmjɑ",
+      "west": "pɑmjɑ",
+      "east_divergence_reason": "ia_to_ja_glide",
+      "west_divergence_reason": "ia_to_ja_glide"
+    },
+    { "armenian": "յուղ", "east": "juʁ", "west": "juʁ" }
+  ]
+}

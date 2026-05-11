@@ -62,7 +62,8 @@
     "typecheck": "tsc --noEmit",
     "knip": "knip",
     "prepublishOnly": "npm run build",
-    "test": "jest --env=node --colors --coverage test --verbose --silent=false"
+    "test": "jest --env=node --colors --coverage test --verbose --silent=false",
+    "ipa-conformance": "npm run build && node tools/ipa-conformance/run.mjs"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.9",

@@ -1,5 +1,6 @@
 import type { TransliterationStandard, CharMapping, SequenceMapping } from "../types.js";
 import type { Token } from "../scanner/tokens.js";
+import { isArmenianInWordDiacritic } from "../armenian/alphabet.js";
 import { normalizeArmenian } from "../armenian/normalize.js";
 import { scan } from "../scanner/scanner.js";
 import { resolveMapping } from "./context.js";
@@ -10,6 +11,18 @@ import {
   toLowerCanonical,
 } from "./casing.js";
 import { DEFAULT_PUNCTUATION } from "./punctuation.js";
+
+/**
+ * Armenian in-word diacritic punctuation is transparent to word runs and
+ * context-rule prev/next lookups. The token is still emitted (and mapped
+ * through punctuation) but it is invisible to phonological context.
+ */
+function isInWordDiacriticToken(token: Token | undefined): boolean {
+  if (!token) return false;
+  return (
+    token.kind === "punctuation" && isArmenianInWordDiacritic(token.value)
+  );
+}
 
 /**
  * Core transliteration engine.
@@ -59,8 +72,14 @@ export class TransliterationEngine {
 
       for (let i = run.start; i < run.end; i++) {
         const token = tokens[i]!;
-        const prev = i > 0 ? tokens[i - 1] : undefined;
-        const next = i < tokens.length - 1 ? tokens[i + 1] : undefined;
+        if (isInWordDiacriticToken(token)) {
+          // Diacritic — emit via punctuation map, skip phonological mapping.
+          output[i] = this.punctMap.get(token.value) ?? token.value;
+          processedInWord.add(i);
+          continue;
+        }
+        const prev = findNeighbor(tokens, i, -1);
+        const next = findNeighbor(tokens, i, +1);
 
         const mapped = this.mapToken(token, prev, next);
         output[i] =
@@ -132,27 +151,58 @@ export class TransliterationEngine {
     }
   }
 
-  /** Find consecutive runs of Armenian tokens (words) */
+  /**
+   * Find consecutive runs of Armenian tokens (words). Armenian in-word
+   * diacritics (՛ ՚ ՙ ՟) extend a run but cannot start one — they only
+   * count as word-internal if surrounded by Armenian letters.
+   */
   private findWordRuns(
     tokens: readonly Token[],
   ): Array<{ start: number; end: number }> {
     const runs: Array<{ start: number; end: number }> = [];
     let runStart = -1;
+    let lastLetterIndex = -1;
 
     for (let i = 0; i <= tokens.length; i++) {
       const token = i < tokens.length ? tokens[i] : undefined;
-      const isArmenian =
+      const isLetter =
         token?.kind === "armenian_letter" ||
         token?.kind === "armenian_sequence";
+      const isDiacritic = isInWordDiacriticToken(token);
 
-      if (isArmenian && runStart === -1) {
-        runStart = i;
-      } else if (!isArmenian && runStart !== -1) {
-        runs.push({ start: runStart, end: i });
+      if (isLetter) {
+        if (runStart === -1) runStart = i;
+        lastLetterIndex = i;
+      } else if (isDiacritic && runStart !== -1) {
+        // Extend the open run, but only commit to end:lastLetterIndex+1
+        // if no further letter appears.
+        continue;
+      } else if (runStart !== -1) {
+        runs.push({ start: runStart, end: lastLetterIndex + 1 });
         runStart = -1;
+        lastLetterIndex = -1;
       }
     }
 
     return runs;
   }
+}
+
+/**
+ * Find the nearest non-diacritic token from `tokens[i]` in `direction`
+ * (-1 = before, +1 = after). Used for context-rule prev/next so in-word
+ * diacritics are skipped during context evaluation.
+ */
+function findNeighbor(
+  tokens: readonly Token[],
+  i: number,
+  direction: -1 | 1,
+): Token | undefined {
+  let j = i + direction;
+  while (j >= 0 && j < tokens.length) {
+    const candidate = tokens[j];
+    if (candidate && !isInWordDiacriticToken(candidate)) return candidate;
+    j += direction;
+  }
+  return undefined;
 }

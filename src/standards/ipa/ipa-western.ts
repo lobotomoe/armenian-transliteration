@@ -1,167 +1,222 @@
 import type { TransliterationStandard } from "../../types.js";
 
-// Armenian vowels (lowercase) used in context rules for \u0578 word-initial behaviour
-// \u0561\u0565\u0567\u0568\u056B\u0578\u0585\u057E
-const VOWELS_AND_V = ["\u0561", "\u0565", "\u0567", "\u0568", "\u056B", "\u0578", "\u0585", "\u057E"] as const;
+/**
+ * Western Armenian (Standard) — broad phonemic IPA (Tier 1: orthography → phoneme).
+ *
+ * Scope: strict orthography-to-phoneme mapping. Every rule is attested in
+ * primary phonology sources (JIPA 2024, Dolatian 2022) as a phonemic-level
+ * generalization, not as a lexicalized or morphophonological alternation.
+ *
+ * Western Armenian differs from Eastern in two ways:
+ *  1. The Classical three-way stop/affricate contrast (voiced / voiceless
+ *     unaspirated / voiceless aspirated) is reduced to two-way. The voiced
+ *     and voiceless-aspirated series are merged into a single aspirated
+ *     series; the voiceless-unaspirated series becomes voiced. (W1)
+ *     Diachronic source: Sayeed & Vaux 2017, per JIPA 2024: 447–448;
+ *     Baronian 2017; Dolatian 2022 slide 3.
+ *
+ *       Letter  Eastern   Standard Western
+ *       բ       /b/       /pʰ/
+ *       գ       /ɡ/       /kʰ/
+ *       դ       /d/       /tʰ/
+ *       ձ       /d͡z/      /t͡sʰ/
+ *       ջ       /d͡ʒ/      /t͡ʃʰ/
+ *       կ       /k/       /ɡ/
+ *       պ       /p/       /b/
+ *       տ       /t/       /d/
+ *       ծ       /t͡s/      /d͡z/
+ *       ճ       /t͡ʃ/      /d͡ʒ/
+ *       թ       /tʰ/      /tʰ/   (unchanged: aspirated)
+ *       ք       /kʰ/      /kʰ/   (unchanged)
+ *       փ       /pʰ/      /pʰ/   (unchanged)
+ *       ց       /t͡sʰ/     /t͡sʰ/  (unchanged in Standard Western)
+ *       չ       /t͡ʃʰ/     /t͡ʃʰ/  (unchanged in Standard Western)
+ *
+ *  2. The /ju/ glide-vowel sequence is fronted to /ʏ/ in post-consonant
+ *     contexts (W6). Documented as variable across speakers/words in
+ *     Dolatian 2022 slide 6 and JIPA 2024: 461. Implemented here only for
+ *     the orthographic digraph իւ (Classical spelling); the reformed
+ *     spelling յու is left as /ju/ because the post-consonant context
+ *     varies and the engine does not support the required lookbehind
+ *     across arbitrary morpheme boundaries. Documented gap; see notes.
+ *
+ * Note on dialect variant: this profile targets the **Standard Western**
+ * pronunciation taught in diaspora schools and used in dictionaries (e.g.,
+ * Bedrossian, Kouymjian). The Beirut variety (HD speaker in JIPA 2024)
+ * unaspirated affricates ց → /t͡s/ and չ → /t͡ʃ/; we keep them aspirated
+ * for parity with Standard Western references.
+ *
+ * Out of scope (deferred to a future `ipa-western-narrow` profile):
+ *  - Stress placement.
+ *  - Schwa epenthesis (հոս → [hos], գրել → [kəɾel]; obligatory before
+ *    initial sibilant-stop clusters in Western: ստ → [əst]).
+ *    JIPA 2024: 465.
+ *  - Western progressive obstruent devoicing (W4): voiced obstruent
+ *    devoices when preceded by a voiceless obstruent across morpheme
+ *    boundaries. JIPA 2024: 458–459. Applies in derived environments,
+ *    not blindly.
+ *  - Regressive obstruent devoicing (ղ → [χ], վ → [f] before voiceless).
+ *    Same disposition as Eastern: lexicalized/morphophonological, not a
+ *    productive phonotactic rule.
+ *  - Adjacent-sibilant deaspiration of aspirated stops (ափսէ → [ɑpse]).
+ *    Variable across speakers per JIPA 2024: 453.
+ *  - յու / իւ → /ʏ/ in arbitrary post-consonant positions. Variable per
+ *    Dolatian 2022 and JIPA 2024: 461.
+ *  - Classical էօ → /œ/ digraph. Not attested in any primary source
+ *    consulted; if needed, implement as a lexical exception list.
+ *
+ * Primary sources:
+ *  - Seyfarth, S., Dolatian, H., Guekguezian, P., Kelly, N. & Toparlak, T.
+ *    (2024). Armenian (Yerevan Eastern and Beirut Western). Journal of the
+ *    International Phonetic Association 54(1): 445–478.
+ *    DOI: 10.1017/S0025100323000130 (open access).
+ *  - Dolatian, H. (2022). Armenian Phonology and Phonetics. Glottothèque
+ *    lecture series.
+ *  - Baronian, L. (2017). On the diachrony of Armenian stops. In Sayeed
+ *    & Vaux (eds.). (Cited via JIPA 2024: 447.)
+ */
 
-// Western Armenian reduced the three-way stop/affricate contrast (voiced /
-// voiceless unaspirated / aspirated) to a two-way contrast (voiced / aspirated):
-//
-//   - Eastern voiced series merged with aspirated in Western
-//   - Eastern voiceless unaspirated series became voiced in Western
-//   - Eastern aspirated series remained aspirated in Western
-//
-//   Letter  Eastern    Western
-//   \u0562 (բ)   b          p\u02B0     (voiced → aspirated, merges with \u0583)
-//   \u0563 (գ)   \u0261          k\u02B0     (voiced → aspirated, merges with \u0584)
-//   \u0564 (դ)   d          t\u02B0     (voiced → aspirated, merges with \u0569)
-//   \u056E (ծ)   t\u0361s        d\u0361z     (voiceless → voiced)
-//   \u056F (կ)   k          \u0261      (voiceless → voiced)
-//   \u0571 (ձ)   d\u0361z        t\u0361s\u02B0   (voiced → aspirated, merges with \u0581)
-//   \u0573 (ճ)   t\u0361\u0283        d\u0361\u0292     (voiceless → voiced)
-//   \u057A (պ)   p          b      (voiceless → voiced)
-//   \u057B (ջ)   d\u0361\u0292        t\u0361\u0283\u02B0   (voiced → aspirated, merges with \u0579)
-//   \u057F (տ)   t          d      (voiceless → voiced)
-//
-// Aspirated consonants (\u0569 t\u02B0, \u0579 t\u0361\u0283\u02B0, \u0581 t\u0361s\u02B0, \u0583 p\u02B0, \u0584 k\u02B0) are unchanged.
+// Sibilant + stop phonotactic constraint (W3). Armenian (and most languages)
+// disallow sibilant + voiced-stop clusters at any morpheme boundary; the
+// orthographic ստ, սպ, սկ, շտ, շպ, շկ surfaces with voiceless plosives
+// regardless of the W1 voicing collapse applied to standalone պ/տ/կ.
+// Cross-linguistically universal phonotactic pattern; specific Armenian
+// confirmation in JIPA 2024: 453 (HD's "voiceless plosives are not
+// aspirated adjacent to voiceless sibilants") and Dum-Tragut 2009: 24
+// §1.2.1.b for the Eastern side of the same fact.
 
 export const ipaWestern: TransliterationStandard = {
   id: "ipa-western",
-  name: "IPA Phonemic Transcription (Western Armenian)",
+  name: "IPA Phonemic Transcription (Standard Western Armenian)",
   targetScript: "ipa",
   reversible: false,
 
   charMappings: [
-    // U+0561 \u0561
-    { armenian: "\u0561", target: "a" },
-    // U+0562 \u0562 — Western: Eastern voiced /b/ → aspirated /p\u02B0/ (merges with \u0583); reverseDefault false (\u0583 is canonical /p\u02B0/)
-    { armenian: "\u0562", target: "p\u02B0", reverseDefault: false },
-    // U+0563 \u0563 — Western: Eastern voiced /\u0261/ → aspirated /k\u02B0/ (merges with \u0584); reverseDefault false (\u0584 is canonical /k\u02B0/)
-    { armenian: "\u0563", target: "k\u02B0", reverseDefault: false },
-    // U+0564 \u0564 — Western: Eastern voiced /d/ → aspirated /t\u02B0/ (merges with \u0569); reverseDefault false (\u0569 is canonical /t\u02B0/)
-    { armenian: "\u0564", target: "t\u02B0", reverseDefault: false },
-    // U+0565 \u0565 — word-initial maps to "j\u025B"
+    // ── Vowels ──────────────────────────────────────────────────────────
+    // Identical inventory to Eastern. JIPA 2024: 446, 461.
+    { armenian: "ա", target: "ɑ" },
+    { armenian: "ի", target: "i" },
+    { armenian: "ը", target: "ə" },
+    { armenian: "օ", target: "o", reverseDefault: false },
+
+    // ե / է / ո — identical rules to Eastern. Dum-Tragut 2009: 14, 16.
     {
-      armenian: "\u0565",
-      target: "\u025B",
+      armenian: "ե",
+      target: "e",
+      reverseDefault: true,
+      contextRules: [{ condition: { wordInitial: true }, target: "je" }],
+    },
+    { armenian: "է", target: "e", reverseDefault: false },
+    {
+      armenian: "ո",
+      target: "o",
       reverseDefault: true,
       contextRules: [
-        { condition: { wordInitial: true }, target: "j\u025B" },
+        { condition: { wordInitial: true, followedBy: ["վ"] }, target: "o" },
+        { condition: { wordInitial: true }, target: "vo" },
       ],
     },
-    // U+0566 \u0566
-    { armenian: "\u0566", target: "z" },
-    // U+0567 \u0567 — same IPA "\u025B" as \u0565, not the reverse default
-    { armenian: "\u0567", target: "\u025B", reverseDefault: false },
-    // U+0568 \u0568
-    { armenian: "\u0568", target: "\u0259" },
-    // U+0569 \u0569 — aspirated T (unchanged in Western); reverse default for /tʰ/
-    { armenian: "\u0569", target: "t\u02B0", reverseDefault: true },
-    // U+056A \u056A
-    { armenian: "\u056A", target: "\u0292" },
-    // U+056B \u056B
-    { armenian: "\u056B", target: "i" },
-    // U+056C \u056C
-    { armenian: "\u056C", target: "l" },
-    // U+056D \u056D
-    { armenian: "\u056D", target: "\u03C7" },
-    // U+056E \u056E — Western voicing shift: Eastern t\u0361s → Western d\u0361z; reverseDefault true (sole source of /d\u0361z/)
-    { armenian: "\u056E", target: "d\u0361z", reverseDefault: true },
-    // U+056F \u056F — Western voicing shift: Eastern k → Western \u0261 (IPA voiced velar stop, U+0261); reverseDefault true (sole source of /\u0261/)
-    { armenian: "\u056F", target: "\u0261", reverseDefault: true },
-    // U+0570 \u0570
-    { armenian: "\u0570", target: "h" },
-    // U+0571 \u0571 — Western: Eastern voiced /d\u0361z/ → aspirated /t\u0361s\u02B0/ (merges with \u0581); reverseDefault false (\u0581 is canonical /t\u0361s\u02B0/)
-    { armenian: "\u0571", target: "t\u0361s\u02B0", reverseDefault: false },
-    // U+0572 \u0572
-    { armenian: "\u0572", target: "\u0281" },
-    // U+0573 \u0573 — Western voicing shift: Eastern t\u0361\u0283 → Western d\u0361\u0292; reverseDefault true (sole source of /d\u0361\u0292/)
-    { armenian: "\u0573", target: "d\u0361\u0292", reverseDefault: true },
-    // U+0574 \u0574
-    { armenian: "\u0574", target: "m" },
-    // U+0575 \u0575
-    { armenian: "\u0575", target: "j" },
-    // U+0576 \u0576
-    { armenian: "\u0576", target: "n" },
-    // U+0577 \u0577
-    { armenian: "\u0577", target: "\u0283" },
-    // U+0578 \u0578 — word-initial maps to "v\u0254" unless followed by a vowel or \u057E
-    {
-      armenian: "\u0578",
-      target: "\u0254",
-      reverseDefault: true,
-      contextRules: [
-        {
-          condition: { wordInitial: true, notFollowedBy: [...VOWELS_AND_V] },
-          target: "v\u0254",
-        },
-      ],
-    },
-    // U+0579 \u0579 — aspirated affricate (unchanged in Western); reverse default
-    { armenian: "\u0579", target: "t\u0361\u0283\u02B0", reverseDefault: true },
-    // U+057A \u057A — Western voicing shift: Eastern p → Western b; reverseDefault true (sole source of /b/)
-    { armenian: "\u057A", target: "b", reverseDefault: true },
-    // U+057B \u057B — Western: Eastern voiced /d\u0361\u0292/ → aspirated /t\u0361\u0283\u02B0/ (merges with \u0579); reverseDefault false (\u0579 is canonical /t\u0361\u0283\u02B0/)
-    { armenian: "\u057B", target: "t\u0361\u0283\u02B0", reverseDefault: false },
-    // U+057C \u057C — trilled R; reverse default
-    { armenian: "\u057C", target: "r", reverseDefault: true },
-    // U+057D \u057D
-    { armenian: "\u057D", target: "s" },
-    // U+057E \u057E
-    { armenian: "\u057E", target: "v" },
-    // U+057F \u057F — Western voicing shift: Eastern t → Western d; reverseDefault true (sole source of /d/)
-    { armenian: "\u057F", target: "d", reverseDefault: true },
-    // U+0580 \u0580 — tap R; not reverse default (\u057C is)
-    { armenian: "\u0580", target: "\u027E", reverseDefault: false },
-    // U+0581 \u0581 — aspirated affricate (unchanged in Western); reverse default
-    { armenian: "\u0581", target: "t\u0361s\u02B0", reverseDefault: true },
-    // U+0582 \u0582 — rarely stands alone; part of the \u0578\u0582 digraph
-    { armenian: "\u0582", target: "u" },
-    // U+0583 \u0583 — aspirated P (unchanged in Western); reverse default for /pʰ/
-    { armenian: "\u0583", target: "p\u02B0", reverseDefault: true },
-    // U+0584 \u0584 — aspirated K (unchanged in Western); reverse default for /kʰ/
-    { armenian: "\u0584", target: "k\u02B0", reverseDefault: true },
-    // U+0585 \u0585 — not reverse default (\u0578 already maps to "\u0254" with reverseDefault)
-    { armenian: "\u0585", target: "\u0254", reverseDefault: false },
-    // U+0586 \u0586
-    { armenian: "\u0586", target: "f" },
+
+    // ── Stops and affricates: W1 voicing collapse ───────────────────────
+    // Eastern voiced → Western aspirated:
+    { armenian: "բ", target: "pʰ", reverseDefault: false },
+    { armenian: "գ", target: "kʰ", reverseDefault: false },
+    { armenian: "դ", target: "tʰ", reverseDefault: false },
+    { armenian: "ձ", target: "t͡sʰ", reverseDefault: false },
+    { armenian: "ջ", target: "t͡ʃʰ", reverseDefault: false },
+    // Eastern voiceless-unaspirated → Western voiced:
+    { armenian: "պ", target: "b", reverseDefault: false },
+    { armenian: "տ", target: "d", reverseDefault: false },
+    { armenian: "կ", target: "ɡ", reverseDefault: false },
+    { armenian: "ծ", target: "d͡z", reverseDefault: false },
+    { armenian: "ճ", target: "d͡ʒ", reverseDefault: false },
+    // Eastern voiceless-aspirated → unchanged:
+    { armenian: "թ", target: "tʰ", reverseDefault: true },
+    { armenian: "ք", target: "kʰ", reverseDefault: true },
+    { armenian: "փ", target: "pʰ", reverseDefault: true },
+    { armenian: "ց", target: "t͡sʰ", reverseDefault: true },
+    { armenian: "չ", target: "t͡ʃʰ", reverseDefault: true },
+
+    // ── Fricatives ──────────────────────────────────────────────────────
+    // Identical to Eastern. JIPA 2024: 447.
+    { armenian: "զ", target: "z" },
+    { armenian: "ժ", target: "ʒ" },
+    { armenian: "խ", target: "χ" },
+    { armenian: "ղ", target: "ʁ", reverseDefault: false },
+    { armenian: "հ", target: "h" },
+    { armenian: "ս", target: "s" },
+    { armenian: "շ", target: "ʃ" },
+    { armenian: "վ", target: "v", reverseDefault: true },
+    { armenian: "ֆ", target: "f" },
+
+    // ── Sonorants ───────────────────────────────────────────────────────
+    // Standard Western has merged ր and ռ to a single rhotic /ɾ/ in most
+    // varieties (JIPA 2024: 459: "Beirut WA … has neutralized the rhotic
+    // distinction"). Some conservative speakers and prescriptive
+    // transcriptions retain the contrast. We follow the JIPA Beirut
+    // analysis: both → /ɾ/.
+    { armenian: "լ", target: "l" },
+    { armenian: "մ", target: "m" },
+    { armenian: "ն", target: "n" },
+    { armenian: "յ", target: "j" },
+    { armenian: "ռ", target: "ɾ", reverseDefault: false },
+    { armenian: "ր", target: "ɾ", reverseDefault: true },
+
+    // Classical glide letter ւ — see note under sequenceMappings (the
+    // standalone form is now rare; appears mainly in digraphs ու and ե+ւ).
+    { armenian: "ւ", target: "v", reverseDefault: false },
   ],
 
+  // sequenceMappings: ordered longest-first as required by the scanner.
+  // All two-char sequences precede the single-char ligature և.
   sequenceMappings: [
-    // \u0578\u0582 digraph (U+0578 + U+0582) \u2192 "u"
-    { armenian: "\u0578\u0582", target: "u" },
-    // \u0565\u057E sequence (\u0565 + \u057E) \u2014 word-initial maps to "j\u025Bv"
+    // ── Digraph ─────────────────────────────────────────────────────────
+    // ու = /u/. Identical to Eastern.
+    { armenian: "ու", target: "u" },
+
+    // ── ե + V/W combinations ────────────────────────────────────────────
     {
-      armenian: "\u0565\u057E",
-      target: "\u025Bv",
-      contextRules: [
-        { condition: { wordInitial: true }, target: "j\u025Bv" },
-      ],
+      armenian: "եվ",
+      target: "ev",
+      contextRules: [{ condition: { wordInitial: true }, target: "jev" }],
     },
-    // \u0565\u0582 traditional spelling (U+0565 + U+0582) \u2014 alternative spelling of "\u025Bv"
     {
-      armenian: "\u0565\u0582",
-      target: "\u025Bv",
-      contextRules: [
-        { condition: { wordInitial: true }, target: "j\u025Bv" },
-      ],
+      armenian: "եւ",
+      target: "ev",
+      contextRules: [{ condition: { wordInitial: true }, target: "jev" }],
     },
-    // \u0587 ligature (U+0587) \u2014 word-initial maps to "j\u025Bv"
+
+    // ── W3: sibilant + stop anti-collapse ───────────────────────────────
+    // Phonotactic constraint: Armenian disallows sibilant + voiced-stop
+    // clusters. The orthographic ս/շ + պ/տ/կ surface as /sp st sk ʃp ʃt
+    // ʃk/, NOT /sb sd sɡ ʃb ʃd ʃɡ/ (which the W1 collapse on պ/տ/կ would
+    // otherwise produce). JIPA 2024: 453.
+    { armenian: "սպ", target: "sp" },
+    { armenian: "ստ", target: "st" },
+    { armenian: "սկ", target: "sk" },
+    { armenian: "շպ", target: "ʃp" },
+    { armenian: "շտ", target: "ʃt" },
+    { armenian: "շկ", target: "ʃk" },
+
+    // Single-char ligature (length 1). Must come last to keep the
+    // longest-first invariant.
     {
-      armenian: "\u0587",
-      target: "\u025Bv",
-      contextRules: [
-        { condition: { wordInitial: true }, target: "j\u025Bv" },
-      ],
+      armenian: "և",
+      target: "ev",
+      contextRules: [{ condition: { wordInitial: true }, target: "jev" }],
     },
   ],
 
   punctuation: {
-    "\u0589": ".",   // Armenian full stop \u2192 period
-    "\u055E": "?",   // Armenian question mark \u2192 question mark
-    "\u055D": ",",   // Armenian comma \u2192 comma
-    "\u055C": "!",   // Armenian exclamation mark \u2192 exclamation mark
-    "\u00AB": '"',   // Armenian left guillemet \u2192 double quote
-    "\u00BB": '"',   // Armenian right guillemet \u2192 double quote
+    "։": ".",
+    "՞": "?",
+    "՝": ",",
+    "՜": "!",
+    "«": '"',
+    "»": '"',
+    "՛": "",
+    "՚": "",
+    "ՙ": "",
+    "՟": "",
   },
 };

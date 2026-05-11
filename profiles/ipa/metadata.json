@@ -6,46 +6,60 @@
   "aliases": {},
   "profiles": {
     "ipa-eastern": {
-      "label": "Eastern Armenian IPA",
+      "label": "Eastern Armenian IPA (broad phonemic, Tier 1)",
       "domain": "phonemic",
-      "authority": "Standard Eastern Armenian phonemic inventory",
+      "authority": "Standard Eastern Armenian — broad phonemic transcription per Dum-Tragut 2009 and JIPA 2024. Tier 1: strict orthography → phoneme, no allophonic detail.",
+      "scope": "Strict orthography → phoneme mapping. Excludes allophonic detail (stress, schwa epenthesis, regressive devoicing, word-final devoicing, post-nasal aspiration, suffix palatalization). See docs/LINGUISTIC_RATIONALE.md for the rule-by-rule rationale.",
       "sources": [
-        {
-          "title": "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
-          "kind": "scholarly-system",
-          "year": 1998
-        },
         {
           "title": "Jasmine Dum-Tragut, Armenian: Modern Eastern Armenian, London Oriental and African Language Library 14, Amsterdam: John Benjamins, 2009",
           "kind": "scholarly-system",
           "year": 2009
         },
         {
-          "title": "Armenian language — IPA inventory, Wikipedia",
-          "kind": "secondary-reference",
-          "url": "https://en.wikipedia.org/wiki/Help:IPA/Armenian"
+          "title": "Seyfarth, Dolatian, Guekguezian, Kelly & Toparlak (2024). Armenian (Yerevan Eastern and Beirut Western). Journal of the International Phonetic Association 54(1): 445–478",
+          "kind": "scholarly-system",
+          "year": 2024,
+          "url": "https://doi.org/10.1017/S0025100323000130"
+        },
+        {
+          "title": "Hossep Dolatian, Armenian Phonology and Phonetics (Glottothèque lecture series, 2022)",
+          "kind": "scholarly-system",
+          "year": 2022
+        },
+        {
+          "title": "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
+          "kind": "scholarly-system",
+          "year": 1998
         }
       ]
     },
     "ipa-western": {
-      "label": "Western Armenian IPA",
+      "label": "Standard Western Armenian IPA (broad phonemic, Tier 1)",
       "domain": "phonemic",
-      "authority": "Standard Western Armenian phonemic inventory",
+      "authority": "Standard Western Armenian — broad phonemic transcription per JIPA 2024 and Dolatian 2022. Standard Western retains aspiration on թ ք փ ց չ.",
+      "scope": "Strict orthography → phoneme mapping with W1 voicing collapse. Excludes Western-specific allophonic detail (progressive devoicing, schwa epenthesis, sibilant-adjacent deaspiration, յու → ʏ post-consonant). See docs/LINGUISTIC_RATIONALE.md for the rule-by-rule rationale.",
       "sources": [
+        {
+          "title": "Seyfarth, Dolatian, Guekguezian, Kelly & Toparlak (2024). Armenian (Yerevan Eastern and Beirut Western). Journal of the International Phonetic Association 54(1): 445–478",
+          "kind": "scholarly-system",
+          "year": 2024,
+          "url": "https://doi.org/10.1017/S0025100323000130"
+        },
+        {
+          "title": "Hossep Dolatian, Armenian Phonology and Phonetics (Glottothèque lecture series, 2022)",
+          "kind": "scholarly-system",
+          "year": 2022
+        },
         {
           "title": "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
           "kind": "scholarly-system",
           "year": 1998
         },
         {
-          "title": "Michele Sigler, Specificity and agreement in Standard Western Armenian, MIT PhD thesis, 1996",
+          "title": "Luc Baronian, On the diachrony of Armenian stops (in Sayeed & Vaux, eds.), 2017",
           "kind": "scholarly-system",
-          "year": 1996
-        },
-        {
-          "title": "Western Armenian — sound system, Wikipedia",
-          "kind": "secondary-reference",
-          "url": "https://en.wikipedia.org/wiki/Western_Armenian#Phonology"
+          "year": 2017
         }
       ]
     }

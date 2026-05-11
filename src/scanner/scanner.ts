@@ -1,6 +1,10 @@
 import type { Token } from "./tokens.js";
 import type { SequenceMapping } from "../types.js";
-import { isArmenianLetter, isArmenianPunctuation } from "../armenian/alphabet.js";
+import {
+  isArmenianInWordDiacritic,
+  isArmenianLetter,
+  isArmenianPunctuation,
+} from "../armenian/alphabet.js";
 
 /** U+0587 ARMENIAN SMALL LIGATURE EW — treated as an Armenian letter */
 const ARMENIAN_EW = "\u0587";
@@ -139,47 +143,65 @@ export function scan(text: string, sequences: readonly SequenceMapping[]): Token
 /**
  * Annotate each Armenian token with its position within its word.
  *
- * A "word" is a consecutive run of armenian_letter and armenian_sequence tokens.
- * Word boundaries are any non-Armenian token (whitespace, punctuation, other).
+ * A "word" is a consecutive run of armenian_letter and armenian_sequence
+ * tokens. Armenian in-word diacritic punctuation (emphasis ՛, apostrophe ՚,
+ * left half-ring ՙ, abbreviation ՟) is transparent: it does not break a
+ * word run, but does not receive a wordPosition of its own — the
+ * surrounding letters are positioned as if the diacritic were absent.
+ *
+ * All other punctuation, whitespace, and "other" tokens close the run.
  *
  * Positions:
- * - "isolated": single-token word
- * - "initial": first token of a multi-token word
- * - "medial": middle token(s)
- * - "final": last token
+ * - "isolated": single-letter-token word
+ * - "initial": first letter token of a multi-token word
+ * - "medial": middle letter token(s)
+ * - "final": last letter token
  */
 function annotateWordPositions(tokens: Token[]): Token[] {
-  const isArmenian = (t: Token) => t.kind === "armenian_letter" || t.kind === "armenian_sequence";
+  const isArmenian = (t: Token) =>
+    t.kind === "armenian_letter" || t.kind === "armenian_sequence";
+  const isInWordDiacritic = (t: Token) =>
+    t.kind === "punctuation" && isArmenianInWordDiacritic(t.value);
 
-  let runStart = -1;
+  // Indices of Armenian-letter/sequence tokens belonging to the current run.
+  let runLetterIndices: number[] = [];
 
-  const closeRun = (runEnd: number) => {
-    if (runStart === -1) return;
-    const len = runEnd - runStart;
-    if (len === 1) {
-      const tok = tokens[runStart];
-      if (tok) tok.wordPosition = "isolated";
+  const closeRun = () => {
+    if (runLetterIndices.length === 0) return;
+    if (runLetterIndices.length === 1) {
+      const idx = runLetterIndices[0];
+      if (idx !== undefined) {
+        const tok = tokens[idx];
+        if (tok) tok.wordPosition = "isolated";
+      }
     } else {
-      for (let k = runStart; k < runEnd; k++) {
-        const tok = tokens[k];
+      const last = runLetterIndices.length - 1;
+      for (let k = 0; k < runLetterIndices.length; k++) {
+        const idx = runLetterIndices[k];
+        if (idx === undefined) continue;
+        const tok = tokens[idx];
         if (!tok) continue;
-        if (k === runStart) tok.wordPosition = "initial";
-        else if (k === runEnd - 1) tok.wordPosition = "final";
+        if (k === 0) tok.wordPosition = "initial";
+        else if (k === last) tok.wordPosition = "final";
         else tok.wordPosition = "medial";
       }
     }
-    runStart = -1;
+    runLetterIndices = [];
   };
 
   for (let j = 0; j < tokens.length; j++) {
     const tok = tokens[j];
-    if (tok && isArmenian(tok)) {
-      if (runStart === -1) runStart = j;
+    if (!tok) continue;
+    if (isArmenian(tok)) {
+      runLetterIndices.push(j);
+    } else if (isInWordDiacritic(tok)) {
+      // Transparent within a run; if no run is open, it doesn't open one.
+      continue;
     } else {
-      closeRun(j);
+      closeRun();
     }
   }
-  closeRun(tokens.length);
+  closeRun();
 
   return tokens;
 }
