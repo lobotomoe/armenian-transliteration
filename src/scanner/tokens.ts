@@ -1,7 +1,7 @@
 import type { LetterPosition } from "../types.js";
 
 /** Token kinds produced by the scanner */
-export type TokenKind =
+type TokenKind =
   | "armenian_letter"
   | "armenian_sequence"
   | "punctuation"

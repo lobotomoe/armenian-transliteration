@@ -1,351 +1,404 @@
 /**
- * ALA-LC (American Library Association – Library of Congress) standard —
- * comprehensive character mapping tests.
+ * ALA-LC Armenian Romanization, 2022 version — comprehensive tests.
  *
- * ALA-LC is similar to BGN/PCGN but uses aspirate modifiers (U+02BB turned comma)
- * and ě (U+011B) for ը instead of ə.
+ * All expected values are derived from the authoritative source:
+ *   https://www.loc.gov/catdir/cpso/romanization/armenian.pdf
  *
- * Key differences from BGN/PCGN:
- *   ը U+0568 → ě  (U+011B, e with caron) instead of ə
- *   թ U+0569 → tʻ (t + U+02BB modifier letter turned comma)
- *   ց U+0581 → tsʻ (ts + U+02BB)
- *   փ U+0583 → pʻ (p + U+02BB)
- *   ք U+0584 → kʻ (k + U+02BB)
- *   խ U+056D → kh (same as BGN)
- *   ձ U+0571 → dz (same as BGN)
+ * Notes referenced below:
+ *   - Note 1: West Armenian bracketed values are not emitted (East default).
+ *   - Note 2: ե → y (replacing e) word-initial + followed by vowel, Classical.
+ *   - Note 3: soft sign (U+02B9 ʹ) inserted between Գհ/Դզ/Կհ/Սհ/Տս bigrams.
+ *   - Note 4: յ → ḥ (U+1E25) word-initial (or stem in compound — not detected).
+ *   - Note 5: եւ → ew (Classical orthography).
+ *   - Note 6: և → ev (modern ligature). Lowercase "եվ" word-start soft-sign
+ *     exception with lexical exceptions (ևեթ, ևս) is NOT implemented.
  *
- * Word-initial context rules (same as BGN/PCGN):
- *   ε (U+0565) word-initial → ye
- *   ο (U+0578) word-initial + notFollowedBy[vowels/β] → vo
+ * Diacritics used:
+ *   ʻ U+02BB MODIFIER LETTER TURNED COMMA (aspirate mark)
+ *   ʹ U+02B9 MODIFIER LETTER PRIME (soft sign)
+ *   ē U+0113 / Ē U+0112  (է / Է)
+ *   ě U+011B / Ě U+011A  (ը / Ը)
+ *   ḥ U+1E25 / Ḥ U+1E24  (initial յ / Յ)
+ *   ṛ U+1E5B / Ṛ U+1E5A  (ռ / Ռ)
+ *   ō U+014D / Ō U+014C  (օ / Օ)
  *
- * Sequences:
- *   ου (U+0578+U+0582) → u
- *   and (U+0587) → ev / yev
- *   ε+β (U+0565+U+057E) → ev / yev
- *   εω traditional (U+0565+U+0582) → yeu word-initial / eu mid-word
- *     (ALA-LC has no sequence mapping for εω, so it resolves ε→ye (word-initial)+ω→u)
- *
- * Armenian codepoints: see bgn-pcgn.test.ts for reference.
+ * Armenian codepoints: see bgn-pcgn.test.ts for the full reference table.
  */
 import { transliterate } from "../../src";
 
 const t = (text: string) => transliterate(text, { standard: "ala-lc" });
 
-const B = "\u0562"; // բ — neutral mid-word wrapper
+const B = "բ"; // բ — neutral mid-word wrapper
 const mid = (ch: string) => `${B}${ch}${B}`;
 
-describe("ALA-LC standard", () => {
+describe("ALA-LC standard (2022)", () => {
   // ─────────────────────────────────────────────────────────────────────────
-  // All 38 lowercase letters in mid-word context
+  // All 38 lowercase letters in mid-word context (no word-initial rules fire).
   // ─────────────────────────────────────────────────────────────────────────
   describe("38 lowercase letter mappings (mid-word context)", () => {
     test.each([
-      ["\u0561", "a"], // ա → a
-      ["\u0562", "b"], // բ → b
-      ["\u0563", "g"], // գ → g
-      ["\u0564", "d"], // դ → d
-      ["\u0565", "e"], // ե → e (mid-word; no ye)
-      ["\u0566", "z"], // զ → z
-      ["\u0567", "e"], // է → e (same as ε, not ē like ISO)
-      ["\u0568", "\u011B"], // ը → ě (U+011B, ALA-LC specific!)
-      ["\u0569", "t\u02BB"], // թ → tʻ (t + U+02BB)
-      ["\u056A", "zh"], // ժ → zh
-      ["\u056B", "i"], // ի → i
-      ["\u056C", "l"], // լ → l
-      ["\u056D", "kh"], // խ → kh
-      ["\u056E", "ts"], // ծ → ts
-      ["\u056F", "k"], // կ → k
-      ["\u0570", "h"], // հ → h
-      ["\u0571", "dz"], // ձ → dz
-      ["\u0572", "gh"], // ղ → gh
-      ["\u0573", "ch"], // ճ → ch
-      ["\u0574", "m"], // մ → m
-      ["\u0575", "y"], // յ → y
-      ["\u0576", "n"], // ն → n
-      ["\u0577", "sh"], // շ → sh
-      ["\u0578", "o"], // ο → o (mid-word; no vo)
-      ["\u0579", "ch"], // չ → ch
-      ["\u057A", "p"], // պ → p
-      ["\u057B", "j"], // ջ → j
-      ["\u057C", "r"], // ռ → r
-      ["\u057D", "s"], // ς → s
-      ["\u057E", "v"], // β → v
-      ["\u057F", "t"], // τ → t
-      ["\u0580", "r"], // ρ → r
-      ["\u0581", "ts\u02BB"], // ց → tsʻ (ts + U+02BB)
-      ["\u0582", "u"], // ω → u (same as BGN)
-      ["\u0583", "p\u02BB"], // փ → pʻ (p + U+02BB)
-      ["\u0584", "k\u02BB"], // ք → kʻ (k + U+02BB)
-      ["\u0585", "o"], // օ → o
-      ["\u0586", "f"], // ֆ → f
-    ])("բ%sβ → b%sb", (ch, expected) => {
+      ["ա", "a"],            // ա
+      ["բ", "b"],            // բ
+      ["գ", "g"],            // գ
+      ["դ", "d"],            // դ
+      ["ե", "e"],            // ե (mid-word: e)
+      ["զ", "z"],            // զ
+      ["է", "ē"],       // է → ē
+      ["ը", "ě"],       // ը → ě
+      ["թ", "tʻ"],      // թ → tʻ
+      ["ժ", "zh"],           // ժ
+      ["ի", "i"],            // ի
+      ["լ", "l"],            // լ
+      ["խ", "kh"],           // խ
+      ["ծ", "ts"],           // ծ
+      ["կ", "k"],            // կ
+      ["հ", "h"],            // հ
+      ["ձ", "dz"],           // ձ
+      ["ղ", "gh"],           // ղ
+      ["ճ", "ch"],           // ճ
+      ["մ", "m"],            // մ
+      ["յ", "y"],            // յ (mid-word: y)
+      ["ն", "n"],            // ն
+      ["շ", "sh"],           // շ
+      ["ո", "o"],            // ո (NO vo rule)
+      ["չ", "chʻ"],     // չ → chʻ
+      ["պ", "p"],            // պ
+      ["ջ", "j"],            // ջ
+      ["ռ", "ṛ"],       // ռ → ṛ
+      ["ս", "s"],            // ս
+      ["վ", "v"],            // վ
+      ["տ", "t"],            // տ
+      ["ր", "r"],            // ր
+      ["ց", "tsʻ"],     // ց → tsʻ
+      ["ւ", "w"],            // ւ → w (yiwn)
+      ["փ", "pʻ"],      // փ → pʻ
+      ["ք", "kʻ"],      // ք → kʻ
+      ["օ", "ō"],       // օ → ō
+      ["ֆ", "f"],            // ֆ
+    ])("բ%sբ → b%sb", (ch, expected) => {
       expect(t(mid(ch))).toBe(`b${expected}b`);
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // All 38 uppercase single-letter words
-  // Ε (U+0535) isolated → YE (word-initial rule)
-  // Ο (U+0548) isolated → VO (word-initial, nothing follows)
+  // All 38 uppercase single-letter words — isolated position fires word-initial
+  // rules where applicable.
   // ─────────────────────────────────────────────────────────────────────────
   describe("38 uppercase single-letter words", () => {
     test.each([
-      ["\u0531", "A"], // Ա → A
-      ["\u0532", "B"], // Բ → B
-      ["\u0533", "G"], // Γ → G
-      ["\u0534", "D"], // Δ → D
-      ["\u0535", "YE"], // Ε — word-initial → ye → YE
-      ["\u0536", "Z"], // Ζ → Z
-      ["\u0537", "E"], // Η → E
-      ["\u0538", "\u011A"], // Θ → Ě (U+011A, capital E with caron)
-      ["\u0539", "T\u02BB"], // Θ → Tʻ
-      ["\u053A", "ZH"], // Ι → ZH
-      ["\u053B", "I"], // Ι → I
-      ["\u053C", "L"], // Κ → L
-      ["\u053D", "KH"], // Λ → KH
-      ["\u053E", "TS"], // Μ → TS
-      ["\u053F", "K"], // Ν → K
-      ["\u0540", "H"], // Ξ → H
-      ["\u0541", "DZ"], // Ο → DZ
-      ["\u0542", "GH"], // Π → GH
-      ["\u0543", "CH"], // Ρ → CH
-      ["\u0544", "M"], // Σ → M
-      ["\u0545", "Y"], // Τ → Y
-      ["\u0546", "N"], // Υ → N
-      ["\u0547", "SH"], // Φ → SH
-      ["\u0548", "VO"], // Ο — isolated, nothing follows → VO
-      ["\u0549", "CH"], // Χ → CH
-      ["\u054A", "P"], // Ψ → P
-      ["\u054B", "J"], // Ω → J
-      ["\u054C", "R"], // Ρ → R
-      ["\u054D", "S"], // Σ → S
-      ["\u054E", "V"], // Β → V
-      ["\u054F", "T"], // Τ → T
-      ["\u0550", "R"], // Υ → R
-      ["\u0551", "TS\u02BB"], // Ω → TSʻ
-      ["\u0552", "U"], // Ω → U
-      ["\u0553", "P\u02BB"], // Φ → Pʻ
-      ["\u0554", "K\u02BB"], // Ψ → Kʻ
-      ["\u0555", "O"], // Ω → O
-      ["\u0556", "F"], // Φ → F
+      ["Ա", "A"],                  // Ա
+      ["Բ", "B"],                  // Բ
+      ["Գ", "G"],                  // Գ (isolated, no follower → plain g/G)
+      ["Դ", "D"],                  // Դ (isolated → plain d/D)
+      ["Ե", "E"],                  // Ե — isolated, no follower → just E
+      ["Զ", "Z"],                  // Զ
+      ["Է", "Ē"],             // Է → Ē
+      ["Ը", "Ě"],             // Ը → Ě
+      ["Թ", "Tʻ"],            // Թ → Tʻ
+      ["Ժ", "ZH"],                 // Ժ
+      ["Ի", "I"],                  // Ի
+      ["Լ", "L"],                  // Լ
+      ["Խ", "KH"],                 // Խ
+      ["Ծ", "TS"],                 // Ծ
+      ["Կ", "K"],                  // Կ
+      ["Հ", "H"],                  // Հ
+      ["Ձ", "DZ"],                 // Ձ
+      ["Ղ", "GH"],                 // Ղ
+      ["Ճ", "CH"],                 // Ճ
+      ["Մ", "M"],                  // Մ
+      ["Յ", "Ḥ"],             // Յ — word-initial → Ḥ (note 4)
+      ["Ն", "N"],                  // Ն
+      ["Շ", "SH"],                 // Շ
+      ["Ո", "O"],                  // Ո — no vo rule
+      ["Չ", "CHʻ"],           // Չ → CHʻ
+      ["Պ", "P"],                  // Պ
+      ["Ջ", "J"],                  // Ջ
+      ["Ռ", "Ṛ"],             // Ռ → Ṛ
+      ["Ս", "S"],                  // Ս (isolated → no soft-sign trigger)
+      ["Վ", "V"],                  // Վ
+      ["Տ", "T"],                  // Տ (isolated)
+      ["Ր", "R"],                  // Ր
+      ["Ց", "TSʻ"],           // Ց → TSʻ
+      ["Ւ", "W"],                  // Ւ
+      ["Փ", "Pʻ"],            // Փ → Pʻ
+      ["Ք", "Kʻ"],            // Ք → Kʻ
+      ["Օ", "Ō"],             // Օ → Ō
+      ["Ֆ", "F"],                  // Ֆ
     ])("%s → %s", (armenian, expected) => {
       expect(t(armenian)).toBe(expected);
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Context rule: ε (U+0565) word-initial → ye (same as BGN/PCGN)
+  // Note 2: ե → y (replaces e) word-initial + followed by vowel.
   // ─────────────────────────────────────────────────────────────────────────
-  describe("ε (U+0565) word-initial → ye", () => {
-    test("ε (isolated) → ye", () => {
-      expect(t("\u0565")).toBe("ye");
+  describe("note 2: ե → y word-initial + followed by vowel", () => {
+    test("ե isolated → e (no follower, not vowel)", () => {
+      expect(t("ե")).toBe("e");
     });
 
-    test("Ε (isolated) → YE", () => {
-      expect(t("\u0535")).toBe("YE");
+    test("ե + consonant (word-initial) → e (no y replacement)", () => {
+      // ե (U+0565) + կ (U+056F)
+      expect(t("եկ")).toBe("ek");
     });
 
-    test("ε+κ (word-initial) → yek", () => {
-      expect(t("\u0565\u056F")).toBe("yek");
+    test("ե + ա (word-initial + vowel) → y + a = ya", () => {
+      // ե (U+0565) + ա (U+0561) — Classical "Եա..." form
+      expect(t("եա")).toBe("ya");
     });
 
-    test("β+ε+β (mid-word ε) → beb (no ye)", () => {
-      expect(t(mid("\u0565"))).toBe("beb");
+    test("ե + ի (word-initial + vowel) → yi", () => {
+      expect(t("եի")).toBe("yi");
     });
 
-    test("Ε+ρ+and+α+ν (Yerevan) → Yerevan", () => {
-      expect(t("\u0535\u057C\u0587\u0561\u0576")).toBe("Yerevan");
+    test("Yerevan: Ե+ր+և+ա+ն → Erevan (Ե followed by consonant ր → E)", () => {
+      // Ե(U+0535)+ր(U+0580)+և(U+0587 ligature → ev)+ա(U+0561)+ն(U+0576)
+      expect(t("Երևան")).toBe("Erevan");
+    });
+
+    test("բ + ե + բ (mid-word ե) → beb (no y, not word-initial)", () => {
+      expect(t(mid("ե"))).toBe("beb");
+    });
+
+    test("ա + ե (mid-word ե after vowel) → ae (no y replacement mid-word)", () => {
+      expect(t("աե")).toBe("ae");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Context rule: ο (U+0578) word-initial + notFollowedBy[vowels/β] → vo
+  // Note 4: յ → ḥ word-initial (Classical orthography).
   // ─────────────────────────────────────────────────────────────────────────
-  describe("ο (U+0578) word-initial context rules", () => {
-    test("ο (isolated) → vo", () => {
-      expect(t("\u0578")).toBe("vo");
+  describe("note 4: յ → ḥ word-initial", () => {
+    test("յ isolated → ḥ (word-initial)", () => {
+      expect(t("յ")).toBe("ḥ");
     });
 
-    test("Ο (isolated) → VO", () => {
-      expect(t("\u0548")).toBe("VO");
+    test("Յ isolated → Ḥ", () => {
+      expect(t("Յ")).toBe("Ḥ");
     });
 
-    test("ο+ν (word-initial + consonant) → von", () => {
-      expect(t("\u0578\u0576")).toBe("von");
+    test("յ + ա (word-initial) → ḥa", () => {
+      expect(t("յա")).toBe("ḥa");
     });
 
-    test("ο+χ+ι (word-initial + χ) → vochi", () => {
-      expect(t("\u0578\u0579\u056B")).toBe("vochi");
-    });
-
-    test("ο+β (ο followed by β — in VOWELS_AND_V) → ov, not vo", () => {
-      expect(t("\u0578\u057E")).toBe("ov");
-    });
-
-    test("ο+α (ο followed by α — vowel) → oa, not vo", () => {
-      expect(t("\u0578\u0561")).toBe("oa");
-    });
-
-    test("ο+ο (ο followed by ο — vowel) → oo, not vo", () => {
-      expect(t("\u0578\u0578")).toBe("oo");
-    });
-
-    test("β+ο+β (mid-word ο) → bob, not bvo b", () => {
-      expect(t(mid("\u0578"))).toBe("bob");
-    });
-
-    test("Ο+ς+κ+ι (Oski) → Voski", () => {
-      expect(t("\u0548\u057D\u056F\u056B")).toBe("Voski");
+    test("բ + յ + բ (mid-word յ) → byb (y, not ḥ)", () => {
+      expect(t(mid("յ"))).toBe("byb");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Sequence: ου (U+0578 + U+0582) → u (same as BGN)
+  // Note 3: soft-sign (U+02B9 ʹ) disambiguation for digraph-conflicting bigrams.
   // ─────────────────────────────────────────────────────────────────────────
-  describe("sequence ου (U+0578+U+0582) → u", () => {
-    test("ου (isolated) → u", () => {
-      expect(t("\u0578\u0582")).toBe("u");
+  describe("note 3: soft-sign disambiguation bigrams", () => {
+    test("գ + հ → gʹh (would otherwise read as ղ=gh)", () => {
+      expect(t("գհ")).toBe("gʹh");
     });
 
-    test("Ου standalone → U", () => {
-      expect(t("\u0548\u0582")).toBe("U");
+    test("դ + զ → dʹz (would otherwise read as ձ=dz)", () => {
+      expect(t("դզ")).toBe("dʹz");
     });
 
-    test("ο+υ+ρ+α+χ (Urakh) → Urakh", () => {
-      expect(t("\u0548\u0582\u0580\u0561\u056D")).toBe("Urakh");
+    test("կ + հ → kʹh (would otherwise read as խ=kh)", () => {
+      expect(t("կհ")).toBe("kʹh");
     });
 
-    test("β+ου+β (mid-word) → bub", () => {
-      expect(t(`${B}\u0578\u0582${B}`)).toBe("bub");
+    test("ս + հ → sʹh (would otherwise read as շ=sh)", () => {
+      expect(t("սհ")).toBe("sʹh");
+    });
+
+    test("տ + ս → tʹs (would otherwise read as ծ=ts)", () => {
+      expect(t("տս")).toBe("tʹs");
+    });
+
+    test("LoC example: պատսպարան → patʹsparan", () => {
+      // պ ա տ ս պ ա ր ա ն
+      expect(
+        t("պատսպարան"),
+      ).toBe("patʹsparan");
+    });
+
+    test("LoC example: Դզնունի → Dʹznuni", () => {
+      // Դ զ ն ո ւ ն ի — note ո+ւ → ու sequence → u
+      expect(
+        t("Դզնունի"),
+      ).toBe("Dʹznuni");
+    });
+
+    test("LoC example: կհալ → kʹhal", () => {
+      // կ հ ա լ
+      expect(t("կհալ")).toBe("kʹhal");
+    });
+
+    test("LoC example: մոտս → motʹs", () => {
+      // մ ո տ ս
+      expect(t("մոտս")).toBe("motʹs");
+    });
+
+    test("plain ղ stays gh (no soft sign — single letter, not bigram)", () => {
+      expect(t(mid("ղ"))).toBe("bghb");
+    });
+
+    test("plain ձ stays dz (no soft sign — single letter, not bigram)", () => {
+      expect(t(mid("ձ"))).toBe("bdzb");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Sequence: and (U+0587) → ev / yev (same as BGN)
+  // Sequence: ու digraph (U+0578 + U+0582) → "u"
   // ─────────────────────────────────────────────────────────────────────────
-  describe("sequence and (U+0587) → ev / yev", () => {
-    test("and (isolated) → yev", () => {
-      expect(t("\u0587")).toBe("yev");
+  describe("sequence ու (U+0578+U+0582) → u", () => {
+    test("ու (isolated) → u", () => {
+      expect(t("ու")).toBe("u");
     });
 
-    test("β+and+β (mid-word) → bevb", () => {
-      expect(t(`${B}\u0587${B}`)).toBe("bevb");
+    test("Ու (standalone) → U", () => {
+      expect(t("Ու")).toBe("U");
     });
 
-    test("Μεζ and Δζεζ (standalone) → Mez yev Dzez", () => {
-      expect(t("\u0544\u0565\u0566 \u0587 \u0534\u0566\u0565\u0566")).toBe(
-        "Mez yev Dzez",
+    test("Ո+ւ+ր+ա+խ (Ուrakh) → Urakh", () => {
+      expect(t("Ուրախ")).toBe("Urakh");
+    });
+
+    test("բ + ու + բ (mid-word) → bub", () => {
+      expect(t(`${B}ու${B}`)).toBe("bub");
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Sequence: և modern ligature (U+0587) → "ev" (note 6, no soft-sign exception)
+  // ─────────────────────────────────────────────────────────────────────────
+  describe("sequence և (U+0587) → ev", () => {
+    test("և isolated → ev (no yev)", () => {
+      expect(t("և")).toBe("ev");
+    });
+
+    test("բ + և + բ (mid-word) → bevb", () => {
+      expect(t(`${B}և${B}`)).toBe("bevb");
+    });
+
+    test("Մեզ և Ձեզ → Mez ev Dzez (no Yev capitalization)", () => {
+      expect(t("Մեզ և Ձեզ")).toBe(
+        "Mez ev Dzez",
       );
     });
 
-    test("δ+ε+ρ+and+ς → derevs", () => {
-      expect(t("\u0564\u0565\u057C\u0587\u057D")).toBe("derevs");
+    test("դ + ե + ռ + և + ս → deṛevs (mid-word ե stays e, ռ → ṛ, և → ev)", () => {
+      // դ ե ռ և ս → d + e + ṛ + ev + s
+      expect(t("դեռևս")).toBe("deṛevs");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Sequence: ε+β (U+0565 + U+057E) → ev / yev (same as BGN)
+  // Sequence: եւ Classical orthography (U+0565 + U+0582) → "ew" (note 5)
   // ─────────────────────────────────────────────────────────────────────────
-  describe("sequence ε+β (U+0565+U+057E) → ev / yev", () => {
-    test("ε+β (isolated) → yev", () => {
-      expect(t("\u0565\u057E")).toBe("yev");
+  describe("sequence եւ (U+0565+U+0582) → ew (Classical)", () => {
+    test("ե + ւ (isolated, Classical) → ew", () => {
+      expect(t("եւ")).toBe("ew");
     });
 
-    test("Ε+β+ς (word-initial) → Yevs", () => {
-      expect(t("\u0535\u057E\u057D")).toBe("Yevs");
+    test("բ + ե + ւ + բ (mid-word) → bewb", () => {
+      expect(t(`${B}եւ${B}`)).toBe("bewb");
     });
 
-    test("β+ε+β+β (mid-word) → bevb", () => {
-      expect(t(`${B}\u0565\u057E${B}`)).toBe("bevb");
+    test("Բ + ա + ր + ե + ւ (Barew — Classical spelling) → Barew", () => {
+      // Բ(U+0532)+ա(U+0561)+ր(U+0580)+ե(U+0565)+ւ(U+0582)
+      expect(t("Բարեւ")).toBe("Barew");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // εω traditional (U+0565 + U+0582) — ALA-LC has NO sequence mapping for this.
-  // Each letter maps independently: ε word-initial → ye, ω → u → "yeu"
-  // Mid-word: ε → e, ω → u → "eu"
+  // Sequence: եվ (U+0565 + U+057E) modern Eve sequence → "ev"
   // ─────────────────────────────────────────────────────────────────────────
-  describe("εω traditional (U+0565+U+0582) — independent mapping (no sequence)", () => {
-    test("ε+ω (isolated) → yeu (ε word-initial → ye, ω → u)", () => {
-      expect(t("\u0565\u0582")).toBe("yeu");
+  describe("sequence եվ (U+0565+U+057E) → ev (modern)", () => {
+    test("ե + վ (isolated) → ev", () => {
+      expect(t("եվ")).toBe("ev");
     });
 
-    test("β+ε+ω+β (mid-word) → beub (ε mid-word → e, ω → u)", () => {
-      expect(t(`${B}\u0565\u0582${B}`)).toBe("beub");
+    test("Ե + վ + ս (word-initial) → Evs (no Yev)", () => {
+      // Ե(U+0535)+վ(U+057E)+ս(U+057D)
+      expect(t("Եվս")).toBe("Evs");
+    });
+
+    test("բ + ե + վ + բ (mid-word) → bevb", () => {
+      expect(t(`${B}եվ${B}`)).toBe("bevb");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ALA-LC-specific aspirate distinctions
-  // ─────────────────────────────────────────────────────────────────────────
-  describe("ALA-LC aspirate modifier mappings", () => {
-    test("θ (U+0569 թ) → tʻ (with U+02BB turned comma)", () => {
-      expect(t("\u0569")).toBe("t\u02BB");
-    });
-
-    test("ω (U+0581 ց) → tsʻ", () => {
-      expect(t("\u0581")).toBe("ts\u02BB");
-    });
-
-    test("φ (U+0583 փ) → pʻ", () => {
-      expect(t("\u0583")).toBe("p\u02BB");
-    });
-
-    test("ψ (U+0584 ք) → kʻ", () => {
-      expect(t("\u0584")).toBe("k\u02BB");
-    });
-
-    test("ε (U+0568 ը) → ě (U+011B)", () => {
-      expect(t("\u0568")).toBe("\u011B");
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Punctuation
+  // Punctuation mappings
   // ─────────────────────────────────────────────────────────────────────────
   describe("punctuation mappings", () => {
-    test("\u0589 → .", () => {
-      expect(t("\u0532\u0561\u0580\u0565\u0582\u0589")).toBe("Bareu.");
+    test("։ (Armenian full stop ։) → .", () => {
+      // Բ ա ր ե ւ ։  (Barew. — Classical orthography)
+      expect(t("Բարեւ։")).toBe("Barew.");
     });
 
-    test("\u055E → ?", () => {
-      expect(t("\u053B\u0576\u0579\u0578\u0582\u055E")).toBe("Inchu?");
+    test("՞ (Armenian question mark ՞) → ?", () => {
+      // Ի ն չ ո ւ ՞  (Inchʻu?)
+      expect(t("Ինչու՞")).toBe("Inchʻu?");
     });
 
-    test("\u055D → ,", () => {
-      expect(t("\u0531\u0575\u057D\u0578\u0580\u055D")).toBe("Aysor,");
+    test("՝ (Armenian comma ՝) → ,", () => {
+      // Ա + յ + ս + օ + ր + ՝  → Aysōr,
+      //   (Ա word-initial → A; յ mid-word → y; օ U+0585 → ō)
+      expect(t("Այսօր՝")).toBe("Aysōr,");
     });
 
-    test("\u055C → !", () => {
-      expect(t("\u0532\u0561\u0580\u0565\u0582\u055C")).toBe("Bareu!");
+    test("՜ (Armenian exclamation ՜) → !", () => {
+      expect(t("Բարեւ՜")).toBe("Barew!");
     });
 
-    test("\u00AB\u00BB → double quotes", () => {
-      expect(t("\u00AB\u0532\u0561\u0580\u0565\u0582\u00BB")).toBe('"Bareu"');
+    test("« » → double quotes", () => {
+      expect(t("«Բարեւ»")).toBe('"Barew"');
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Full Armenian word transliterations
+  // Full Armenian word transliterations (LoC 2022 conformance)
   // ─────────────────────────────────────────────────────────────────────────
   describe("full Armenian word transliterations", () => {
     test.each([
-      ["\u0540\u0561\u0575\u0561\u057D\u057F\u0561\u0576", "Hayastan"],
-      ["\u053F\u0565\u0576\u057F\u0580\u0578\u0576", "Kentron"],
-      ["\u0535\u057C\u0587\u0561\u0576", "Yerevan"],
-      ["\u0548\u0572\u057B\u0578\u0582\u0575\u0576", "Voghjuyn"],
-      ["\u054F\u056B\u0563\u0580\u0561\u0576", "Tigran"],
-      ["\u0547\u0578\u0572\u0565\u0580", "Shogher"],
-      ["\u0548\u057D\u056F\u056B", "Voski"],
-      ["\u0561\u0572\u057B\u056B\u056F", "aghjik"],
-      ["\u0531\u0580\u0574\u0565\u0576\u056B\u0561", "Armenia"],
-      ["\u056B\u0576\u0584\u0568", "ink\u02BB\u011B"],
-      ["\u056F\u0561\u0580\u0578\u0572", "karogh"],
-      ["\u0576\u0561\u0587", "naev"],
-      ["\u0574\u0565\u057B", "mej"],
-      ["\u0569\u0565", "t\u02BBe"],
-      ["\u0578\u0579", "voch"],
-      ["\u0565\u057D", "yes"],
+      // Հայաստան: Հ+ա+յ+ա+ս+տ+ա+ն — Հ word-initial, յ mid-word → y
+      ["Հայաստան", "Hayastan"],
+      // Կենտրոն: Կ+ե+ն+տ+ր+ո+ն
+      ["Կենտրոն", "Kentron"],
+      // Երևան: Ե+ր+և+ա+ն — Ե+ր (consonant) → E (not Ye)
+      ["Երևան", "Erevan"],
+      // Ողջույն: Ո+ղ+ջ+ու+յ+ն — Ո → O, ղ → gh, ջ → j, ու → u, յ → y, ն → n
+      ["Ողջույն", "Oghjuyn"],
+      // Տիգրան
+      ["Տիգրան", "Tigran"],
+      // Շողեր: Շ+ո+ղ+ե+ր
+      ["Շողեր", "Shogher"],
+      // Ոսկի: Ո+ս+կ+ի — note: ս+կ does NOT trigger soft sign (only ս+հ does)
+      ["Ոսկի", "Oski"],
+      // աղջիկ: ա+ղ+ջ+ի+կ
+      ["աղջիկ", "aghjik"],
+      // Արմենիա
+      ["Արմենիա", "Armenia"],
+      // ինքը: ի+ն+ք+ը → i+n+kʻ+ě
+      ["ինքը", "inkʻě"],
+      // կարող: կ+ա+ր+ո+ղ
+      ["կարող", "karogh"],
+      // նաև: ն+ա+և → naev
+      ["նաև", "naev"],
+      // մեջ: մ+ե+ջ
+      ["մեջ", "mej"],
+      // թե: թ+ե
+      ["թե", "tʻe"],
+      // ոչ: ո+չ → ochʻ
+      ["ոչ", "ochʻ"],
+      // ես: ե+ս → es (initial ե + consonant ս → e, no y)
+      ["ես", "es"],
+      // Օձուն: Օ+ձ+ո+ւ+ն → Ōdzun (ո+ւ → u sequence)
+      ["Օձուն", "Ōdzun"],
+      // Ռուբեն: Ռ+ո+ւ+բ+ե+ն — title case (Ռ uppercase) → Ṛuben
+      ["Ռուբեն", "Ṛuben"],
+      // Արարատ
+      ["Արարատ", "Ararat"],
+      // Sample with the Note-6 LoC example word: Երևան → Erevan (already covered, repeat for clarity)
+      // and the all-caps form ԵՐԵՎԱՆ → EREVAN
+      ["ԵՐԵՎԱՆ", "EREVAN"],
     ])('"%s" → "%s"', (armenian, expected) => {
       expect(t(armenian)).toBe(expected);
     });
@@ -355,20 +408,21 @@ describe("ALA-LC standard", () => {
   // Multi-word phrase transliterations
   // ─────────────────────────────────────────────────────────────────────────
   describe("multi-word phrase transliterations", () => {
-    test("Nor u norits", () => {
-      // ν+ο+ρ+ι+ς: ν→n, ο→o (mid-word), ρ→r, ι→i, ς(U+0581 ց)→tsʻ → "noritsʻ"
+    test("Նոր ու նորից → Nor u noritsʻ", () => {
+      // Ն+ո+ր  ' '  ո+ւ  ' '  ն+ո+ր+ի+ց (note: word-final ց → tsʻ)
       expect(
-        t("\u0546\u0578\u0580 \u0578\u0582 \u0576\u0578\u0580\u056B\u0581"),
-      ).toBe("Nor u norits\u02BB");
+        t("Նոր ու նորից"),
+      ).toBe("Nor u noritsʻ");
     });
 
-    test("Voski Or", () => {
-      expect(t("\u0548\u057D\u056F\u056B \u0555\u0580")).toBe("Voski Or");
+    test("Ոսկի Օր → Oski Ōr", () => {
+      // Ո+ս+կ+ի  ' '  Օ+ր
+      expect(t("Ոսկի Օր")).toBe("Oski Ōr");
     });
 
-    test("Mez yev Dzez", () => {
-      expect(t("\u0544\u0565\u0566 \u0587 \u0534\u0566\u0565\u0566")).toBe(
-        "Mez yev Dzez",
+    test("Մեզ և Ձեզ → Mez ev Dzez", () => {
+      expect(t("Մեզ և Ձեզ")).toBe(
+        "Mez ev Dzez",
       );
     });
   });

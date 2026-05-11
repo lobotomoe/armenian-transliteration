@@ -28,7 +28,7 @@
  *   ο (U+0578) → o always
  *
  * Sequence: and (U+0587) → ew
- *           ου (U+0578+U+0582) → ow (independent mapping)
+ *           ου (U+0578+U+0582) → u (per Pedersen H-M column entry 35)
  *
  * Armenian codepoints: see bgn-pcgn.test.ts for reference.
  */
@@ -202,23 +202,23 @@ describe("Hübschmann-Meillet standard", () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Sequence: ου (U+0578 + U+0582) → ow (independent char mapping)
+  // Sequence: ου (U+0578 + U+0582) → u (Pedersen H-M entry 35)
   // ─────────────────────────────────────────────────────────────────────────
-  describe("sequence ου (U+0578+U+0582) → ow", () => {
-    test("ου (isolated) → ow", () => {
-      expect(t("\u0578\u0582")).toBe("ow");
+  describe("sequence ου (U+0578+U+0582) → u", () => {
+    test("ου (isolated) → u", () => {
+      expect(t("\u0578\u0582")).toBe("u");
     });
 
-    test("Ου (standalone) → Ow", () => {
-      expect(t("\u0548\u0582")).toBe("Ow");
+    test("Ου (standalone) → U", () => {
+      expect(t("\u0548\u0582")).toBe("U");
     });
 
-    test("ο+υ+ρ+α+χ (Ουrakh) → Owrax", () => {
-      expect(t("\u0548\u0582\u0580\u0561\u056D")).toBe("Owrax");
+    test("ο+υ+ρ+α+χ (Ουrakh) → Urax", () => {
+      expect(t("\u0548\u0582\u0580\u0561\u056D")).toBe("Urax");
     });
 
-    test("β+ου+β (mid-word) → bowb", () => {
-      expect(t(`${B}\u0578\u0582${B}`)).toBe("bowb");
+    test("β+ου+β (mid-word) → bub", () => {
+      expect(t(`${B}\u0578\u0582${B}`)).toBe("bub");
     });
   });
 
@@ -264,9 +264,9 @@ describe("Hübschmann-Meillet standard", () => {
     });
 
     test("\u055E → ?", () => {
-      // χ(U+0579 չ)→čʿ, ου→ow → "InčʿoW?"
+      // χ(U+0579 չ)→čʿ, ου→u → "Inčʿu?"
       expect(t("\u053B\u0576\u0579\u0578\u0582\u055E")).toBe(
-        "In\u010D\u02BFow?",
+        "In\u010D\u02BFu?",
       );
     });
 
@@ -295,8 +295,8 @@ describe("Hübschmann-Meillet standard", () => {
       ["\u053F\u0565\u0576\u057F\u0580\u0578\u0576", "Kentron"],
       // Yerevan — Ε→E (no Ye), ρ→ṙ, and→ew, α→a, ν→n → "Eṙewan"
       ["\u0535\u057C\u0587\u0561\u0576", "E\u1E59ewan"],
-      // Ooghjuyn — Ο→O (no Vo!), ρ→ł, ч→ǰ, ου→ow
-      ["\u0548\u0572\u057B\u0578\u0582\u0575\u0576", "O\u0142\u01F0owyn"],
+      // Ooghjuyn — Ο→O (no Vo!), ρ→ł, ч→ǰ, ου→u
+      ["\u0548\u0572\u057B\u0578\u0582\u0575\u0576", "O\u0142\u01F0uyn"],
       // Tigran
       ["\u054F\u056B\u0563\u0580\u0561\u0576", "Tigran"],
       // Shogher — Σ→Š, ο→o (mid-word), ρ→ł, ε→e, ρ→r → "Šołer"
@@ -330,11 +330,11 @@ describe("Hübschmann-Meillet standard", () => {
   // Multi-word phrase transliterations
   // ─────────────────────────────────────────────────────────────────────────
   describe("multi-word phrase transliterations", () => {
-    test("Nor u norits — ου standalone = ow, ς(U+0581)→cʿ", () => {
+    test("Nor u norits — ου standalone = u, ς(U+0581)→cʿ", () => {
       // ν+ο+ρ+ι+ς: cʿ at end → "noricʿ"
       expect(
         t("\u0546\u0578\u0580 \u0578\u0582 \u0576\u0578\u0580\u056B\u0581"),
-      ).toBe("Nor ow noric\u02BF");
+      ).toBe("Nor u noric\u02BF");
     });
 
     test("Oski Ōr (Ο→O, Ο+ρ→Ō+r — Ο title-case → Ō)", () => {

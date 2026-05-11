@@ -1,0 +1,87 @@
+{
+  "targetLanguage": null,
+  "targetScript": "latin",
+  "scriptCode": "Latn",
+  "profileIds": ["bgn-pcgn", "iso-9985", "hubschmann-meillet", "ala-lc"],
+  "aliases": {},
+  "profiles": {
+    "bgn-pcgn": {
+      "label": "BGN/PCGN Romanization (1981)",
+      "domain": "geographic",
+      "authority": "United States Board on Geographic Names / PCGN",
+      "year": 1981,
+      "sources": [
+        {
+          "title": "Romanization of Armenian: BGN/PCGN 1981 System",
+          "kind": "official-standard",
+          "year": 2022,
+          "url": "https://assets.publishing.service.gov.uk/media/636cd40ad3bf7f164de3c9f3/ROMANIZATION_OF_ARMENIAN_2022_final.pdf"
+        },
+        {
+          "title": "Thomas T. Pedersen, Transliteration of Armenian, Rev. 2.0",
+          "kind": "reference-table",
+          "year": 2009,
+          "url": "https://transliteration.eki.ee/pdf/Armenian_2.0.pdf"
+        }
+      ]
+    },
+    "iso-9985": {
+      "label": "ISO 9985 Romanization",
+      "domain": "romanization",
+      "authority": "International Organization for Standardization",
+      "year": 1996,
+      "sources": [
+        {
+          "title": "ISO 9985:1996 — Information and documentation — Transliteration of Armenian characters into Latin characters",
+          "kind": "official-standard",
+          "year": 1996
+        },
+        {
+          "title": "Thomas T. Pedersen, Transliteration of Armenian, Rev. 2.0 (ISO 9985 column)",
+          "kind": "reference-table",
+          "year": 2009,
+          "url": "https://transliteration.eki.ee/pdf/Armenian_2.0.pdf"
+        }
+      ]
+    },
+    "hubschmann-meillet": {
+      "label": "Hübschmann-Meillet Romanization",
+      "domain": "academic",
+      "authority": "Hübschmann-Meillet scholarly tradition",
+      "year": 1913,
+      "sources": [
+        {
+          "title": "A. Meillet, Altarmenisches Elementarbuch, Heidelberg, 1913 (2nd ed. 1980)",
+          "kind": "scholarly-system",
+          "year": 1913
+        },
+        {
+          "title": "Thomas T. Pedersen, Transliteration of Armenian, Rev. 2.0 (H-M column)",
+          "kind": "reference-table",
+          "year": 2009,
+          "url": "https://transliteration.eki.ee/pdf/Armenian_2.0.pdf"
+        }
+      ]
+    },
+    "ala-lc": {
+      "label": "ALA-LC Romanization (2022)",
+      "domain": "romanization",
+      "authority": "American Library Association / Library of Congress",
+      "year": 2022,
+      "sources": [
+        {
+          "title": "ALA-LC Armenian Romanization Table, 2022 version",
+          "kind": "official-standard",
+          "year": 2022,
+          "url": "https://www.loc.gov/catdir/cpso/romanization/armenian.pdf"
+        },
+        {
+          "title": "Thomas T. Pedersen, Transliteration of Armenian, Rev. 2.0 (ALA-LC 1997 column for historical comparison)",
+          "kind": "secondary-reference",
+          "year": 2009,
+          "url": "https://transliteration.eki.ee/pdf/Armenian_2.0.pdf"
+        }
+      ]
+    }
+  }
+}

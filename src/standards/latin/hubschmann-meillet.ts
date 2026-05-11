@@ -86,6 +86,8 @@ export const hubschmannMeillet: TransliterationStandard = {
   ],
 
   sequenceMappings: [
+    // ու digraph (U+0578 + U+0582) → u (per Pedersen H-M column 35)
+    { armenian: "ու", target: "u" },
     // և ligature (U+0587) → ew
     { armenian: "և", target: "ew" },
   ],

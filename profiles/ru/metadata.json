@@ -1,0 +1,79 @@
+{
+  "targetLanguage": "ru",
+  "targetScript": "cyrillic",
+  "scriptCode": "Cyrl",
+  "profileIds": [
+    "ru-geo-kt-1974",
+    "ru-geo-ra-2011",
+    "ru-proper-vartapetyan-1961",
+    "ru-phonetic-eastern"
+  ],
+  "aliases": {},
+  "profiles": {
+    "ru-geo-kt-1974": {
+      "label": "Russian Geographic Transliteration, Kuzmina-Tumanyan 1974",
+      "domain": "geographic",
+      "authority": "G. G. Kuzmina, editor E. G. Tumanyan",
+      "year": 1974,
+      "sources": [
+        {
+          "title": "Инструкция по русской передаче географических названий Армянской ССР / Сост. Г. Г. Кузьмина; Ред. Э. Г. Туманян. — М., 1974. — 22 с. — 1000 экз.",
+          "kind": "geographic-instruction",
+          "year": 1974,
+          "url": "https://arhiiv.eki.ee/knab/cyr/ins_topo_AM_ru_1974.pdf"
+        }
+      ]
+    },
+    "ru-geo-ra-2011": {
+      "label": "Russian Geographic Transliteration, Republic of Armenia 2011",
+      "domain": "geographic",
+      "authority": "Government of the Republic of Armenia",
+      "year": 2011,
+      "sources": [
+        {
+          "title": "ՀՀ կառավարության 2011 թվականի մարտի 3-ի N 220-Ն որոշում / Постановление Правительства Республики Армения № 220 от 3 марта 2011 года",
+          "kind": "government-decision",
+          "year": 2011,
+          "url": "https://www.arlis.am/hy/acts/66360"
+        }
+      ]
+    },
+    "ru-proper-vartapetyan-1961": {
+      "label": "Russian Proper Names Transliteration, Vartapetyan 1961",
+      "domain": "proper-names",
+      "authority": "N. A. Vartapetyan",
+      "year": 1961,
+      "sources": [
+        {
+          "title": "Н. А. Вартапетян. Справочник по русской транскрипции армянских имен, фамилий и географических названий. Армянское государственное издательство, 1961",
+          "kind": "reference-table",
+          "year": 1961,
+          "url": "https://books.google.com/books/about/%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA_%D0%BF%D0%BE_%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%B9.html?id=NYZKAQAAIAAJ"
+        },
+        {
+          "title": "И. Г. Казумян. Вариантные формы армянских фамилий в русском языке. Автореферат диссертации, Ереван, 1990",
+          "kind": "secondary-reference",
+          "year": 1990,
+          "url": "https://search.rsl.ru/ru/record/01000295426"
+        },
+        {
+          "title": "С. Б. Тошьян. Рецензия на Н. А. Вартапетян. Справочник по русской транскрипции армянских имён, фамилий и географических названий. Известия Академии наук Армянской ССР, 1962",
+          "kind": "critical-review",
+          "year": 1962,
+          "url": "https://arar.sci.am/Content/109000/file_0.pdf"
+        }
+      ]
+    },
+    "ru-phonetic-eastern": {
+      "label": "Russian Phonetic Transcription, Eastern Armenian",
+      "domain": "phonemic",
+      "authority": "armenian-transliteration package profile",
+      "sources": [
+        {
+          "title": "armenian-transliteration Russian phonetic Eastern Armenian profile",
+          "kind": "package-profile"
+        }
+      ]
+    }
+  }
+}

@@ -55,8 +55,8 @@ export const ipaWestern: TransliterationStandard = {
     { armenian: "\u0567", target: "\u025B", reverseDefault: false },
     // U+0568 \u0568
     { armenian: "\u0568", target: "\u0259" },
-    // U+0569 \u0569 — aspirated T (unchanged in Western)
-    { armenian: "\u0569", target: "t\u02B0" },
+    // U+0569 \u0569 — aspirated T (unchanged in Western); reverse default for /tʰ/
+    { armenian: "\u0569", target: "t\u02B0", reverseDefault: true },
     // U+056A \u056A
     { armenian: "\u056A", target: "\u0292" },
     // U+056B \u056B
@@ -117,10 +117,10 @@ export const ipaWestern: TransliterationStandard = {
     { armenian: "\u0581", target: "t\u0361s\u02B0", reverseDefault: true },
     // U+0582 \u0582 — rarely stands alone; part of the \u0578\u0582 digraph
     { armenian: "\u0582", target: "u" },
-    // U+0583 \u0583 — aspirated P (unchanged in Western); not reverse default
-    { armenian: "\u0583", target: "p\u02B0", reverseDefault: false },
-    // U+0584 \u0584 — aspirated K (unchanged in Western); not reverse default
-    { armenian: "\u0584", target: "k\u02B0", reverseDefault: false },
+    // U+0583 \u0583 — aspirated P (unchanged in Western); reverse default for /pʰ/
+    { armenian: "\u0583", target: "p\u02B0", reverseDefault: true },
+    // U+0584 \u0584 — aspirated K (unchanged in Western); reverse default for /kʰ/
+    { armenian: "\u0584", target: "k\u02B0", reverseDefault: true },
     // U+0585 \u0585 — not reverse default (\u0578 already maps to "\u0254" with reverseDefault)
     { armenian: "\u0585", target: "\u0254", reverseDefault: false },
     // U+0586 \u0586

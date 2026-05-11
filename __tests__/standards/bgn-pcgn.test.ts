@@ -1,9 +1,9 @@
 /**
  * BGN/PCGN standard — comprehensive character mapping tests.
  *
- * All expected values were verified against the live transliteration engine.
- * Armenian characters are specified as Unicode escapes to avoid any accidental
- * look-alike substitution.
+ * Expected values are checked against the BGN/PCGN source table and
+ * cross-standard fixtures. Unicode escapes are kept in this historical test
+ * file where they make individual code points explicit.
  *
  * Codepoint reference for the 38 Armenian lowercase letters:
  *   ա U+0561  բ U+0562  գ U+0563  դ U+0564  ե U+0565  զ U+0566
@@ -41,8 +41,8 @@ describe("BGN/PCGN standard", () => {
       ["\u0565", "e"], // ե — mid-word: e (no ye)
       ["\u0566", "z"], // զ
       ["\u0567", "e"], // է
-      ["\u0568", "\u0259"], // ը → ə
-      ["\u0569", "t"], // թ
+      ["\u0568", "y"], // ը
+      ["\u0569", "t\u2019"], // թ
       ["\u056A", "zh"], // ժ
       ["\u056B", "i"], // ի
       ["\u056C", "l"], // լ
@@ -58,18 +58,18 @@ describe("BGN/PCGN standard", () => {
       ["\u0576", "n"], // ն
       ["\u0577", "sh"], // շ
       ["\u0578", "o"], // ո — mid-word: o (no vo)
-      ["\u0579", "ch"], // չ
+      ["\u0579", "ch\u2019"], // չ
       ["\u057A", "p"], // պ
       ["\u057B", "j"], // ջ
-      ["\u057C", "r"], // ռ
+      ["\u057C", "rr"], // ռ
       ["\u057D", "s"], // ս
       ["\u057E", "v"], // վ
       ["\u057F", "t"], // տ
       ["\u0580", "r"], // ր
-      ["\u0581", "ts"], // ց
-      ["\u0582", "u"], // ւ
-      ["\u0583", "p"], // փ
-      ["\u0584", "k"], // ք
+      ["\u0581", "ts\u2019"], // ց
+      ["\u0582", ""], // ւ
+      ["\u0583", "p\u2019"], // փ
+      ["\u0584", "k\u2019"], // ք
       ["\u0585", "o"], // օ
       ["\u0586", "f"], // ֆ
     ])("%s → b%sb", (ch, expected) => {
@@ -93,8 +93,8 @@ describe("BGN/PCGN standard", () => {
       ["\u0535", "YE"], // Ε — word-initial → ye → all-caps → YE
       ["\u0536", "Z"], // Զ
       ["\u0537", "E"], // Է
-      ["\u0538", "\u018F"], // Ը → Ə (capital schwa)
-      ["\u0539", "T"], // Թ
+      ["\u0538", "Y"], // Ը
+      ["\u0539", "T\u2019"], // Թ
       ["\u053A", "ZH"], // Ժ
       ["\u053B", "I"], // Ի
       ["\u053C", "L"], // Լ
@@ -110,18 +110,18 @@ describe("BGN/PCGN standard", () => {
       ["\u0546", "N"], // Ν
       ["\u0547", "SH"], // Շ
       ["\u0548", "VO"], // Ο — isolated, nothing follows → vo → VO
-      ["\u0549", "CH"], // Չ
+      ["\u0549", "CH\u2019"], // Չ
       ["\u054A", "P"], // Π
       ["\u054B", "J"], // Ջ
-      ["\u054C", "R"], // Ռ
+      ["\u054C", "RR"], // Ռ
       ["\u054D", "S"], // Σ
       ["\u054E", "V"], // Β
       ["\u054F", "T"], // Τ
       ["\u0550", "R"], // Ρ
-      ["\u0551", "TS"], // Ց
-      ["\u0552", "U"], // Ւ
-      ["\u0553", "P"], // Փ
-      ["\u0554", "K"], // Ք
+      ["\u0551", "TS\u2019"], // Ց
+      ["\u0552", ""], // Ւ
+      ["\u0553", "P\u2019"], // Փ
+      ["\u0554", "K\u2019"], // Ք
       ["\u0555", "O"], // Օ
       ["\u0556", "F"], // Ֆ
     ])("%s → %s", (armenian, expected) => {
@@ -132,7 +132,7 @@ describe("BGN/PCGN standard", () => {
   // ─────────────────────────────────────────────────────────────────────────
   // Context rule: ե (U+0565) word-initial → "ye"
   // ─────────────────────────────────────────────────────────────────────────
-  describe("ե (U+0565) word-initial → ye", () => {
+  describe("ե (U+0565) context rules → ye", () => {
     test("ե (isolated lowercase) → ye", () => {
       expect(t("\u0565")).toBe("ye");
     });
@@ -146,10 +146,13 @@ describe("BGN/PCGN standard", () => {
       expect(t("\u0565\u056F")).toBe("yek");
     });
 
+    test("ա+ե (after vowel) → aye", () => {
+      expect(t("\u0561\u0565")).toBe("aye");
+    });
+
     test("Ε+ρ+ε+β+α+ν (Erewmore — title-case) → Yerevan", () => {
-      // Ε(U+0535)+ρ(U+0580)+ε(U+0565, mid)+β(U+057E)+α(U+0561)+ν(U+0576)
-      // but real Yerevan uses and: Ε+ρ+and+α+ν
-      expect(t("\u0535\u057C\u0587\u0561\u0576")).toBe("Yerevan");
+      // Ε(U+0535)+ր(U+0580)+and(U+0587)+α(U+0561)+ν(U+0576)
+      expect(t("\u0535\u0580\u0587\u0561\u0576")).toBe("Yerevan");
     });
 
     test("β+ε+β (mid-word ε) → beb (no ye)", () => {
@@ -163,9 +166,7 @@ describe("BGN/PCGN standard", () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Context rule: ο (U+0578) word-initial + notFollowedBy[vowels/վ] → "vo"
-  // VOWELS_AND_V = [ա U+0561, ε U+0565, ε U+0567, ε U+0568, ι U+056B,
-  //                ο U+0578, ο U+0585, β U+057E]
+  // Context rule: ո (U+0578) word-initial → "vo", except ով → "ov"
   // ─────────────────────────────────────────────────────────────────────────
   describe("ο (U+0578) word-initial context rules", () => {
     test("ο (isolated, nothing follows) → vo", () => {
@@ -180,25 +181,25 @@ describe("BGN/PCGN standard", () => {
       expect(t("\u0578\u0576")).toBe("von");
     });
 
-    test("ο+χ (word-initial + χ U+0579) → voch", () => {
+    test("ο+χ (word-initial + χ U+0579) → voch’", () => {
       // ο(U+0578) + χ(U+0579) + ι(U+056B)
-      expect(t("\u0578\u0579\u056B")).toBe("vochi");
+      expect(t("\u0578\u0579\u056B")).toBe("voch\u2019i");
     });
 
-    test("ο+β (ο followed by β U+057E — in VOWELS_AND_V) → ov, not vo", () => {
+    test("ο+β (ο followed by β U+057E) → ov, not vov", () => {
       expect(t("\u0578\u057E")).toBe("ov");
     });
 
-    test("ο+α (ο followed by α U+0561 — vowel) → oa, not vo", () => {
-      expect(t("\u0578\u0561")).toBe("oa");
+    test("ο+α (ο followed by α U+0561 — vowel) → voa", () => {
+      expect(t("\u0578\u0561")).toBe("voa");
     });
 
-    test("ο+ο (ο followed by ο U+0578 — vowel) → oo, not vo", () => {
-      expect(t("\u0578\u0578")).toBe("oo");
+    test("ο+ο (ο followed by ο U+0578 — vowel) → voo", () => {
+      expect(t("\u0578\u0578")).toBe("voo");
     });
 
-    test("ο+ι (ο followed by ι U+056B — vowel) → oi, not vo", () => {
-      expect(t("\u0578\u056B")).toBe("oi");
+    test("ο+ι (ο followed by ι U+056B — vowel) → voi", () => {
+      expect(t("\u0578\u056B")).toBe("voi");
     });
 
     test("β+ο+β (mid-word ο) → bob, not bvo b", () => {
@@ -209,7 +210,7 @@ describe("BGN/PCGN standard", () => {
       expect(t("\u0548\u0576")).toBe("Von");
     });
 
-    test("Ο+β (Ο followed by β — VOWELS_AND_V) → Ov, not Vo", () => {
+    test("Ο+β (Ο followed by β) → Ov, not Vov", () => {
       expect(t("\u0548\u057E")).toBe("Ov");
     });
 
@@ -258,9 +259,13 @@ describe("BGN/PCGN standard", () => {
       expect(t(`${B}\u0587${B}`)).toBe("bevb");
     });
 
-    test("δ+ε+ρ+and+ς (mid-word and) → derevs", () => {
+    test("ν+α+and (after vowel) → nayev", () => {
+      expect(t("\u0576\u0561\u0587")).toBe("nayev");
+    });
+
+    test("δ+ε+ռ+and+ς (mid-word and) → derrevs", () => {
       // δ(U+0564)+ε(U+0565)+ρ(U+057C)+and(U+0587)+ς(U+057D) — same as test word δεραλδ-ς
-      expect(t("\u0564\u0565\u057C\u0587\u057D")).toBe("derevs");
+      expect(t("\u0564\u0565\u057C\u0587\u057D")).toBe("derrevs");
     });
 
     test("standalone and between words (Μεζ and Δζεζ) → Mez yev Dzez", () => {
@@ -286,6 +291,10 @@ describe("BGN/PCGN standard", () => {
 
     test("β+ε+β+β (mid-word ε+β) → bevb", () => {
       expect(t(`${B}\u0565\u057E${B}`)).toBe("bevb");
+    });
+
+    test("α+ε+β (after vowel) → ayev", () => {
+      expect(t("\u0561\u0565\u057E")).toBe("ayev");
     });
   });
 
@@ -316,7 +325,7 @@ describe("BGN/PCGN standard", () => {
     });
 
     test("\u055E (Armenian question mark ՞) → ?", () => {
-      expect(t("\u053B\u0576\u0579\u0578\u0582\u055E")).toBe("Inchu?");
+      expect(t("\u053B\u0576\u0579\u0578\u0582\u055E")).toBe("Inch\u2019u?");
     });
 
     test("\u055D (Armenian comma ՝) → ,", () => {
@@ -341,8 +350,8 @@ describe("BGN/PCGN standard", () => {
       ["\u0540\u0561\u0575\u0561\u057D\u057F\u0561\u0576", "Hayastan"],
       // Κentron: Κ(U+053F)+ε(U+0565)+ν(U+0576)+τ(U+057F)+ρ(U+0580)+ο(U+0578)+ν(U+0576)
       ["\u053F\u0565\u0576\u057F\u0580\u0578\u0576", "Kentron"],
-      // Ερεβαν with and: Ε(U+0535)+ρ(U+057C)+and(U+0587)+α(U+0561)+ν(U+0576)
-      ["\u0535\u057C\u0587\u0561\u0576", "Yerevan"],
+      // Yerevan with and: Ε(U+0535)+ր(U+0580)+and(U+0587)+α(U+0561)+ν(U+0576)
+      ["\u0535\u0580\u0587\u0561\u0576", "Yerevan"],
       // Ooghjuyn: Ο(U+0548)+ρ(U+0572)+ч(U+057B)+ο+υ(U+0578+U+0582)+υ(U+0575)+ν(U+0576)
       ["\u0548\u0572\u057B\u0578\u0582\u0575\u0576", "Voghjuyn"],
       // Τιγραν: Τ(U+054F)+ι(U+056B)+γ(U+0563)+ρ(U+0580)+α(U+0561)+ν(U+0576)
@@ -357,18 +366,18 @@ describe("BGN/PCGN standard", () => {
       ["\u0544\u0565\u0572\u0565\u0564\u056B", "Meghedi"],
       // Armenia: Α(U+0531)+ρ(U+0580)+μ(U+0574)+ε(U+0565)+ν(U+0576)+ι(U+056B)+α(U+0561)
       ["\u0531\u0580\u0574\u0565\u0576\u056B\u0561", "Armenia"],
-      // inks (himself): ι(U+056B)+ν(U+0576)+κ(U+0584)+ε(U+0568) → i+n+k+ə(U+0259)
-      ["\u056B\u0576\u0584\u0568", "ink\u0259"],
+      // inks (himself): ι(U+056B)+ν(U+0576)+κ(U+0584)+ε(U+0568) → i+n+k’+y
+      ["\u056B\u0576\u0584\u0568", "ink\u2019y"],
       // karogh (can/able): κ(U+056F)+α(U+0561)+ρ(U+0580)+ο(U+0578)+ρ(U+0572) → k+a+r+o+gh
       ["\u056F\u0561\u0580\u0578\u0572", "karogh"],
-      // naev (also): ν(U+0576)+α(U+0561)+and(U+0587) → n+a+ev (and mid-word)
-      ["\u0576\u0561\u0587", "naev"],
+      // naev (also): ν(U+0576)+α(U+0561)+and(U+0587) → n+a+yev (after vowel)
+      ["\u0576\u0561\u0587", "nayev"],
       // mej (inside): μ(U+0574)+ε(U+0565)+ч(U+057B) → m+e(mid)+j
       ["\u0574\u0565\u057B", "mej"],
-      // te (if/or): θ(U+0569)+ε(U+0565) → t+e(mid)
-      ["\u0569\u0565", "te"],
-      // voch (not/no): ο(U+0578)+χ(U+0579) → vo+ch (word-initial ο rule)
-      ["\u0578\u0579", "voch"],
+      // te (if/or): θ(U+0569)+ε(U+0565) → t’+e(mid)
+      ["\u0569\u0565", "t\u2019e"],
+      // voch (not/no): ο(U+0578)+χ(U+0579) → vo+ch’ (word-initial ο rule)
+      ["\u0578\u0579", "voch\u2019"],
       // yes (I): ε(U+0565)+ς(U+057D) → ye+s (word-initial ε rule)
       ["\u0565\u057D", "yes"],
     ])('"%s" → "%s"', (armenian, expected) => {
@@ -380,24 +389,24 @@ describe("BGN/PCGN standard", () => {
   // Multi-word phrase transliterations
   // ─────────────────────────────────────────────────────────────────────────
   describe("multi-word phrase transliterations", () => {
-    test("Nor u norits (ου standalone = u)", () => {
+    test("Nor u norits’ (ου standalone = u)", () => {
       // Ν(U+0546)+ο(U+0578)+ρ(U+0580) [space] ου(U+0578+U+0582) [space] ν(U+0576)+ο(U+0578)+ρ(U+0580)+ι(U+056B)+τ(U+0581)
       expect(
         t("\u0546\u0578\u0580 \u0578\u0582 \u0576\u0578\u0580\u056B\u0581"),
-      ).toBe("Nor u norits");
+      ).toBe("Nor u norits\u2019");
     });
 
     test("Voski Or (Ο+ς+κ+ι and Ο+ρ)", () => {
       expect(t("\u0548\u057D\u056F\u056B \u0555\u0580")).toBe("Voski Or");
     });
 
-    test("Khagh chem gnum restoran", () => {
+    test("Khagh ch’em gnum rrestoran", () => {
       // Χ(U+053D)+α(U+0561)+ρ(U+0572) [space] χ(U+0579)+ε(U+0565)+μ(U+0574)...
       expect(
         t(
           "\u053D\u0561\u0572 \u0579\u0565\u0574 \u0563\u0576\u0578\u0582\u0574 \u057C\u0565\u057D\u057F\u0578\u0580\u0561\u0576",
         ),
-      ).toBe("Khagh chem gnum restoran");
+      ).toBe("Khagh ch\u2019em gnum rrestoran");
     });
 
     test("Mez yev Dzez (and standalone between words)", () => {

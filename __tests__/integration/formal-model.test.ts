@@ -2,8 +2,13 @@ import { bgnPcgn } from "../../src/standards/latin/bgn-pcgn.js";
 import { iso9985 } from "../../src/standards/latin/iso-9985.js";
 import { hubschmannMeillet } from "../../src/standards/latin/hubschmann-meillet.js";
 import { alaLc } from "../../src/standards/latin/ala-lc.js";
-import { ruGeographic } from "../../src/standards/cyrillic/ru-geographic.js";
-import { ruPersonal } from "../../src/standards/cyrillic/ru-personal.js";
+import { ruGeoKt1974 } from "../../src/standards/cyrillic/ru-geo-kt-1974.js";
+import { ruGeoRa2011 } from "../../src/standards/cyrillic/ru-geo-ra-2011.js";
+import { ruProperVartapetyan1961 } from "../../src/standards/cyrillic/ru-proper-vartapetyan-1961.js";
+import { ruPhoneticEastern } from "../../src/standards/cyrillic/ru-phonetic-eastern.js";
+import { ipaEastern } from "../../src/standards/ipa/ipa-eastern.js";
+import { ipaWestern } from "../../src/standards/ipa/ipa-western.js";
+import { listStandards } from "../../src/standards/registry.js";
 import type { TransliterationStandard } from "../../src/types.js";
 
 const standards: TransliterationStandard[] = [
@@ -11,14 +16,24 @@ const standards: TransliterationStandard[] = [
   iso9985,
   hubschmannMeillet,
   alaLc,
-  ruGeographic,
-  ruPersonal,
+  ruGeoKt1974,
+  ruGeoRa2011,
+  ruProperVartapetyan1961,
+  ruPhoneticEastern,
+  ipaEastern,
+  ipaWestern,
 ];
 const expectedLetters = Array.from({ length: 38 }, (_, i) =>
   String.fromCodePoint(0x0561 + i),
 );
 
 describe("formal model completeness", () => {
+  test("formal fixture covers every registered standard", () => {
+    expect(standards.map((std) => std.id).sort()).toEqual(
+      [...listStandards()].sort(),
+    );
+  });
+
   for (const std of standards) {
     describe(std.id, () => {
       test("covers all 38 Armenian letters", () => {

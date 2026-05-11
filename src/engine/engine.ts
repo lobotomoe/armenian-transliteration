@@ -57,22 +57,21 @@ export class TransliterationEngine {
       const wordTokens = tokens.slice(run.start, run.end);
       const casing = detectWordCasing(wordTokens);
 
-      // Transliterate each token in the word
-      const wordParts: string[] = [];
       for (let i = run.start; i < run.end; i++) {
         const token = tokens[i]!;
         const prev = i > 0 ? tokens[i - 1] : undefined;
         const next = i < tokens.length - 1 ? tokens[i + 1] : undefined;
 
         const mapped = this.mapToken(token, prev, next);
-        const cased =
+        output[i] =
           casing === "upper"
             ? applyUpperCasing(mapped)
             : applySingleTokenCasing(token, mapped);
-
-        output[i] = cased;
-        wordParts.push(cased);
         processedInWord.add(i);
+      }
+
+      if (casing === "title") {
+        this.applyTitleCasingToFirstOutput(output, run);
       }
     }
 
@@ -117,6 +116,20 @@ export class TransliterationEngine {
     }
 
     return token.value;
+  }
+
+  /** Preserve title case when the first source token maps to an empty string. */
+  private applyTitleCasingToFirstOutput(
+    output: string[],
+    run: { start: number; end: number },
+  ): void {
+    for (let i = run.start; i < run.end; i++) {
+      const value = output[i];
+      if (value && value.length > 0) {
+        output[i] = value.charAt(0).toUpperCase() + value.slice(1);
+        return;
+      }
+    }
   }
 
   /** Find consecutive runs of Armenian tokens (words) */

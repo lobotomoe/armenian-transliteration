@@ -4,21 +4,25 @@ import type { TransliterationStandard } from "../../types.js";
 const VOWELS = ["ա", "ե", "է", "ը", "ի", "ո", "օ"] as const;
 
 /**
- * Russian Geographic Transliteration
+ * Russian Proper Names Transliteration, Vartapetyan 1961
  *
- * Based on: Инструкция по русской передаче географических названий
- * Армянской ССР / Сост. Г. Г. Кузьмина; Ред. Э. Г. Туманян. — М., 1974.
+ * Based on: Вартапетян Н. А. Справочник по русской транскрипции армянских
+ * имён, фамилий и географических названий. — Армянское государственное
+ * издательство.
  *
- * Key characteristics for Eastern Armenian toponyms:
+ * Key characteristics for Eastern Armenian proper-name transfer:
  *   - ջ [dʒ]  → дж  (not ж — distinct from ժ)
- *   - ղ [ʁ]   → г mid-word; к word-initial  ("В начале слова — к", note 5)
- *   - հ [h]   → х   (kept in geographic names: Хаяcтан, Хачкар)
+ *   - ղ [ʁ]   → г mid-word; к word-initial
+ *   - հ [h]   → positional:
+ *       word-initial before vowel  → ""  (omit: Hakob → Акоб, Harutyun → Арутюн)
+ *       word-initial before consonant → г  (Hrant → Грант, Hmayak → Гмаяк)
+ *       mid-word                   → г
  *   - ե       → е   (word-initial е; same letter, no special prefix)
  *   - ո       → во  word-initial before consonant; о elsewhere
  */
-export const ruGeographic: TransliterationStandard = {
-  id: "ru-geographic",
-  name: "Russian Geographic Transliteration (Кузьмина–Туманян 1974)",
+export const ruProperVartapetyan1961: TransliterationStandard = {
+  id: "ru-proper-vartapetyan-1961",
+  name: "Russian Proper Names Transliteration (Vartapetyan 1961)",
   targetScript: "cyrillic",
   reversible: false,
 
@@ -41,31 +45,42 @@ export const ruGeographic: TransliterationStandard = {
     { armenian: "զ", target: "з" },
     // U+0567 է → э
     { armenian: "է", target: "э" },
-    // U+0568 ը → ы  (note: absent from source; ы used as phonetic approximation)
+    // U+0568 ը → ы
     { armenian: "ը", target: "ы" },
     // U+0569 թ [tʰ] → т  (reverseDefault: false — տ is the reverse default for т)
     { armenian: "թ", target: "т", reverseDefault: false },
-    // U+056A ժ [ʒ] → ж  (reverseDefault: true — ջ maps to дж now, so ժ is sole reverse for ж)
+    // U+056A ժ [ʒ] → ж  (sole mapping for ж — ջ maps to дж)
     { armenian: "ժ", target: "ж" },
     // U+056B ի → и
     { armenian: "ի", target: "и" },
     // U+056C լ → л
     { armenian: "լ", target: "л" },
-    // U+056D խ [χ] → х  (reverseDefault: true — հ also → х)
+    // U+056D խ [χ] → х  (reverseDefault: true — հ mid-word also → г, so խ is canonical for х)
     { armenian: "խ", target: "х", reverseDefault: true },
     // U+056E ծ [ts] → ц  (reverseDefault: false — ց is the reverse default for ц)
     { armenian: "ծ", target: "ц", reverseDefault: false },
     // U+056F կ [k] → к  (reverseDefault: true — ք also → к)
     { armenian: "կ", target: "к", reverseDefault: true },
-    // U+0570 հ [h] → х  (geographic names keep Հ as Х: Хаяcтан, Хачкар, Хандaберд)
+    // U+0570 հ [h] — Vartapetyan proper-name rule:
+    //   word-initial before vowel  → "" (omit; Hakob → Акоб, Harutyun → Арутюн)
+    //   word-initial before consonant → г (Hrant → Грант)
+    //   mid-word                   → г (e.g. Mkhitar with internal հ)
     // reverseDefault: false — խ is the canonical reverse for х
-    { armenian: "հ", target: "х", reverseDefault: false },
+    {
+      armenian: "հ",
+      target: "г",
+      reverseDefault: false,
+      contextRules: [
+        {
+          condition: { wordInitial: true, followedBy: [...VOWELS, "ու"] },
+          target: "",
+        },
+        { condition: { wordInitial: true }, target: "г" },
+      ],
+    },
     // U+0571 ձ [dz] → дз
     { armenian: "ձ", target: "дз" },
     // U+0572 ղ [ʁ] → г mid-word; к word-initial
-    // Note 5 in Wikipedia table: "В начале слова — к.
-    // В зависимости от закрепившейся традиции может передаваться через г."
-    // Real examples: Карабах (ղ initial → к), Мегри / Мегеди (ղ mid-word → г)
     {
       armenian: "ղ",
       target: "г",
@@ -101,11 +116,9 @@ export const ruGeographic: TransliterationStandard = {
     { armenian: "չ", target: "ч", reverseDefault: true },
     // U+057A պ [p] → п  (reverseDefault: true — փ also → п)
     { armenian: "պ", target: "п", reverseDefault: true },
-    // U+057B ջ [dʒ] → дж
-    // KEY DIFFERENCE from old russian-phonetic: дж not ж
-    // Both Инструкция 1974 and Вартапетян give дж for Eastern Armenian ջ
+    // U+057B ջ [dʒ] → дж  (Eastern Armenian; Вартапетян: дж for Eastern, ч for Western)
     { armenian: "ջ", target: "дж" },
-    // U+057C ռ [r] → р  (reverseDefault: true — ր also → р, ռ is canonical)
+    // U+057C ռ [r] → р  (reverseDefault: true — canonical reverse for р)
     { armenian: "ռ", target: "р", reverseDefault: true },
     // U+057D ս → с
     { armenian: "ս", target: "с" },

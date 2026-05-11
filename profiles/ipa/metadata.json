@@ -1,0 +1,53 @@
+{
+  "targetLanguage": null,
+  "targetScript": "ipa",
+  "scriptCode": "IPA",
+  "profileIds": ["ipa-eastern", "ipa-western"],
+  "aliases": {},
+  "profiles": {
+    "ipa-eastern": {
+      "label": "Eastern Armenian IPA",
+      "domain": "phonemic",
+      "authority": "Standard Eastern Armenian phonemic inventory",
+      "sources": [
+        {
+          "title": "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
+          "kind": "scholarly-system",
+          "year": 1998
+        },
+        {
+          "title": "Jasmine Dum-Tragut, Armenian: Modern Eastern Armenian, London Oriental and African Language Library 14, Amsterdam: John Benjamins, 2009",
+          "kind": "scholarly-system",
+          "year": 2009
+        },
+        {
+          "title": "Armenian language — IPA inventory, Wikipedia",
+          "kind": "secondary-reference",
+          "url": "https://en.wikipedia.org/wiki/Help:IPA/Armenian"
+        }
+      ]
+    },
+    "ipa-western": {
+      "label": "Western Armenian IPA",
+      "domain": "phonemic",
+      "authority": "Standard Western Armenian phonemic inventory",
+      "sources": [
+        {
+          "title": "Bert Vaux, The Phonology of Armenian, Oxford: Clarendon Press, 1998",
+          "kind": "scholarly-system",
+          "year": 1998
+        },
+        {
+          "title": "Michele Sigler, Specificity and agreement in Standard Western Armenian, MIT PhD thesis, 1996",
+          "kind": "scholarly-system",
+          "year": 1996
+        },
+        {
+          "title": "Western Armenian — sound system, Wikipedia",
+          "kind": "secondary-reference",
+          "url": "https://en.wikipedia.org/wiki/Western_Armenian#Phonology"
+        }
+      ]
+    }
+  }
+}

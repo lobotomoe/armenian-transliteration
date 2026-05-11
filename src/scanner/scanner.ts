@@ -15,27 +15,9 @@ function armenianCharToLower(ch: string): string {
   return ch;
 }
 
-function armenianCharToUpper(ch: string): string {
-  const cp = ch.codePointAt(0);
-  if (cp === undefined) return ch;
-  if (cp >= 0x0561 && cp <= 0x0586) return String.fromCodePoint(cp - ARMENIAN_CASE_OFFSET);
-  return ch;
-}
-
 /** Convert an Armenian string to all-lowercase */
 function seqToLower(s: string): string {
   return Array.from(s).map(armenianCharToLower).join("");
-}
-
-/** Convert an Armenian string to all-uppercase */
-function seqToUpper(s: string): string {
-  return Array.from(s).map(armenianCharToUpper).join("");
-}
-
-/** Convert an Armenian string to title case (first char upper, rest lower) */
-function seqToTitle(s: string): string {
-  const chars = Array.from(s);
-  return chars.map((ch, i) => (i === 0 ? armenianCharToUpper(ch) : armenianCharToLower(ch))).join("");
 }
 
 function isArmenianLetterOrEw(ch: string): boolean {
@@ -67,27 +49,19 @@ interface SequencePattern {
  * 5. Everything else accumulated as "other"
  */
 export function scan(text: string, sequences: readonly SequenceMapping[]): Token[] {
-  // Build unique set of sequence patterns (lowercase canonical), sorted longest-first
+  // Build unique set of sequence patterns (lowercase canonical), sorted longest-first.
+  // Matching is case-insensitive: input slice is lowercased before comparison.
   const seenPatterns = new Set<string>();
   const patterns: SequencePattern[] = [];
 
   for (const mapping of sequences) {
     const lower = seqToLower(mapping.armenian);
-    const upper = seqToUpper(mapping.armenian);
-    const chars = Array.from(mapping.armenian);
-    const candidates = new Set([lower, upper]);
-    if (chars.length > 1) candidates.add(seqToTitle(mapping.armenian));
-
-    for (const variant of candidates) {
-      const variantLower = seqToLower(variant);
-      if (!seenPatterns.has(variantLower)) {
-        seenPatterns.add(variantLower);
-        patterns.push({ lowercase: variantLower, length: Array.from(variantLower).length });
-      }
+    if (!seenPatterns.has(lower)) {
+      seenPatterns.add(lower);
+      patterns.push({ lowercase: lower, length: Array.from(lower).length });
     }
   }
 
-  // Sort longest-first for greedy matching
   patterns.sort((a, b) => b.length - a.length);
 
   const chars = Array.from(text);

@@ -94,7 +94,7 @@ describe("edge cases", () => {
   });
 
   test("Armenian question mark ՞ (U+055E) → ?", () => {
-    expect(transliterate("ինչ\u055E")).toBe("inch?");
+    expect(transliterate("ինչ\u055E")).toBe("inch\u2019?");
   });
 
   test("Armenian exclamation mark ՜ (U+055C) → !", () => {
@@ -160,17 +160,26 @@ describe("edge cases", () => {
     expect(transliterate("այ\nupper")).toBe("ay\nupper");
   });
 
-  // ── direction: to-armenian throws ─────────────────────────────────────────
+  // ── input validation ──────────────────────────────────────────────────────
 
-  test("direction 'to-armenian' throws an error", () => {
-    expect(() => transliterate("hello", { direction: "to-armenian" })).toThrow(
-      "Reverse transliteration (to-armenian) is not yet implemented"
+  test("non-string input throws a clear TypeError", () => {
+    expect(() => transliterate(null as never)).toThrow(TypeError);
+    expect(() => transliterate(null as never)).toThrow(
+      "Expected text to be a string",
     );
   });
 
-  test("createTransliterator with to-armenian throws at creation", () => {
-    expect(() => createTransliterator({ direction: "to-armenian" })).toThrow(
-      "Reverse transliteration (to-armenian) is not yet implemented"
+  test("unknown standard throws a clear error", () => {
+    expect(() =>
+      transliterate("Հայ", { standard: "no-such-standard" as never }),
+    ).toThrow("Unknown transliteration standard: no-such-standard");
+  });
+
+  test("created transliterator validates input text", () => {
+    const t = createTransliterator();
+    expect(() => t(undefined as never)).toThrow(TypeError);
+    expect(() => t(undefined as never)).toThrow(
+      "Expected text to be a string",
     );
   });
 
@@ -180,6 +189,11 @@ describe("edge cases", () => {
     expect(transliterate("Հայ")).toBe(
       transliterate("Հայ", { standard: "bgn-pcgn" })
     );
+  });
+
+  test("createTransliterator without options uses BGN/PCGN by default", () => {
+    const t = createTransliterator();
+    expect(t("Երևան")).toBe("Yerevan");
   });
 
   test("explicit bgn-pcgn equals default", () => {
@@ -245,7 +259,7 @@ describe("edge cases", () => {
 
   test("hyphenated Armenian words are each transliterated independently", () => {
     // Each part of hyphenated word is its own word unit
-    expect(transliterate("Հայ-Ռուս")).toBe("Hay-Rus");
+    expect(transliterate("Հայ-Ռուս")).toBe("Hay-Rrus");
   });
 
   test("և with hyphen", () => {
@@ -300,7 +314,9 @@ describe("edge cases", () => {
     expect(transliterate("ց", { standard: "ala-lc" })).toBe("ts\u02BB");
   });
 
-  test("ALA-LC: word-initial Ե → Ye (same rule as BGN)", () => {
-    expect(transliterate("Երևան", { standard: "ala-lc" })).toBe("Yerevan");
+  test("ALA-LC 2022: word-initial Ե + consonant → E (no Ye rule)", () => {
+    // LoC 2022 note 2: ե → y only when initial + followed by vowel.
+    // Here Ե is followed by ր (consonant), so it stays E.
+    expect(transliterate("Երևան", { standard: "ala-lc" })).toBe("Erevan");
   });
 });

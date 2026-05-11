@@ -6,7 +6,11 @@ export type LatinStandard =
   | "ala-lc";
 
 /** Cyrillic-script transliteration standards */
-export type CyrillicStandard = "ru-geographic" | "ru-personal";
+export type CyrillicStandard =
+  | "ru-geo-kt-1974"
+  | "ru-geo-ra-2011"
+  | "ru-proper-vartapetyan-1961"
+  | "ru-phonetic-eastern";
 
 /** IPA transcription standards */
 export type IpaStandard = "ipa-eastern" | "ipa-western";
@@ -14,8 +18,8 @@ export type IpaStandard = "ipa-eastern" | "ipa-western";
 /** All supported transliteration standards */
 export type Standard = LatinStandard | CyrillicStandard | IpaStandard;
 
-/** Transliteration direction */
-export type Direction = "from-armenian" | "to-armenian";
+/** Transliteration direction. Only `from-armenian` is currently supported. */
+export type Direction = "from-armenian";
 
 /** Options for the transliterate function */
 export interface TransliterateOptions {
@@ -65,7 +69,7 @@ export interface CharMapping {
 
 /** Mapping for a multi-character Armenian sequence */
 export interface SequenceMapping {
-  /** Armenian sequence (lowercase canonical), e.g. "\u0578\u0582" (ou) */
+  /** Armenian sequence (lowercase canonical), e.g. "ու" */
   armenian: string;
   /** Default transliteration output */
   target: string;

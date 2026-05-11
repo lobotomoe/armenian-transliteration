@@ -2,14 +2,14 @@ import { defineConfig } from "tsup";
 
 export default defineConfig([
   {
-    entry: ["src/index.ts"],
+    entry: ["src/index.ts", "src/profiles/index.ts"],
     sourcemap: true,
     platform: "neutral",
     minify: true,
     outDir: "lib",
     format: ["esm", "cjs"],
     dts: true,
-    clean: true,
+    clean: false,
     shims: true,
   },
   {
@@ -20,8 +20,8 @@ export default defineConfig([
     minify: true,
     outDir: "lib",
     format: "iife",
-    dts: true,
-    clean: true,
+    dts: false,
+    clean: false,
     shims: true,
 
     // Suppress all 'node:' imports

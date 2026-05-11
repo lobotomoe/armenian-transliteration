@@ -1,4 +1,4 @@
-import type { Standard, Direction, TransliterateOptions } from "./types.js";
+import type { Standard, TransliterateOptions } from "./types.js";
 import { TransliterationEngine } from "./engine/engine.js";
 import { getStandard } from "./standards/registry.js";
 
@@ -19,24 +19,41 @@ export type {
 } from "./types.js";
 
 export { listStandards } from "./standards/registry.js";
+export {
+  getProfile,
+  getProfilesByTargetLanguage,
+  listProfiles,
+  profiles,
+} from "./profiles/index.js";
+export type {
+  ProfileDomain,
+  ProfileMetadata,
+  ProfileSource,
+  ProfileSourceKind,
+  ProfileStatus,
+} from "./profiles/index.js";
 
-// Engine cache: avoid re-creating engines for the same standard
-const engineCache = new Map<string, TransliterationEngine>();
+const engineCache = new Map<Standard, TransliterationEngine>();
+
+function assertString(text: string): void {
+  if (typeof text !== "string") {
+    throw new TypeError("Expected text to be a string");
+  }
+}
 
 function getEngine(standard: Standard): TransliterationEngine {
   let engine = engineCache.get(standard);
   if (!engine) {
-    const std = getStandard(standard);
-    engine = new TransliterationEngine(std);
+    engine = new TransliterationEngine(getStandard(standard));
     engineCache.set(standard, engine);
   }
   return engine;
 }
 
 /**
- * Transliterate text between Armenian and Latin/Cyrillic scripts.
+ * Transliterate Armenian text to the chosen target script.
  *
- * @param text - The text to transliterate
+ * @param text - The Armenian text to transliterate
  * @param options - Standard and direction options
  * @returns Transliterated text
  */
@@ -44,17 +61,8 @@ export function transliterate(
   text: string,
   options?: TransliterateOptions,
 ): string {
-  const standard: Standard = options?.standard ?? "bgn-pcgn";
-  const direction: Direction = options?.direction ?? "from-armenian";
-
-  if (direction === "to-armenian") {
-    throw new Error(
-      "Reverse transliteration (to-armenian) is not yet implemented",
-    );
-  }
-
-  const engine = getEngine(standard);
-  return engine.transliterate(text);
+  assertString(text);
+  return getEngine(options?.standard ?? "bgn-pcgn").transliterate(text);
 }
 
 /**
@@ -65,17 +73,11 @@ export function transliterate(
  * @returns A function that transliterates text
  */
 export function createTransliterator(
-  options: TransliterateOptions,
+  options: TransliterateOptions = {},
 ): (text: string) => string {
-  const standard: Standard = options.standard ?? "bgn-pcgn";
-  const direction: Direction = options.direction ?? "from-armenian";
-
-  if (direction === "to-armenian") {
-    throw new Error(
-      "Reverse transliteration (to-armenian) is not yet implemented",
-    );
-  }
-
-  const engine = getEngine(standard);
-  return (text: string) => engine.transliterate(text);
+  const engine = getEngine(options.standard ?? "bgn-pcgn");
+  return (text: string) => {
+    assertString(text);
+    return engine.transliterate(text);
+  };
 }

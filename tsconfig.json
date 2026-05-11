@@ -3,13 +3,14 @@
     "@tsconfig/node20/tsconfig.json",
     "@tsconfig/strictest/tsconfig.json"
   ],
-  "files": ["./src/index.ts"],
+  "files": ["./src/index.ts", "./src/profiles/index.ts"],
   "include": ["./src/**/*.ts"],
   "exclude": ["node_modules", "lib"],
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "target": "esnext",
-    "module": "ESNext",
+    "rootDir": "./src",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "declaration": true,
@@ -19,7 +20,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
   },
   "ts-node": {
     "esm": true

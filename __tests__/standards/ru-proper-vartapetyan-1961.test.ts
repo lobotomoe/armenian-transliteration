@@ -1,29 +1,29 @@
 /**
- * Russian Personal Names Transliteration (Вартапетян) — comprehensive tests.
+ * Russian Proper Names Transliteration, Vartapetyan 1961 — comprehensive tests.
  *
  * Source: Вартапетян Н. А. Справочник по русской транскрипции армянских
  * имён, фамилий и географических названий. — Армянское государственное
  * издательство.
  *
- * Key differences from ru-geographic:
+ * Key differences from the geographic profiles:
  *   - հ [h] — positional rule (NOT a fixed х as in geographic):
  *       word-initial before vowel  → "" (omit: Հakob → Акоб, Հarutyun → Арутюн)
  *       word-initial before consonant → г (Hrant → Грант)
  *       mid-word                   → г
  *
- * Shared with ru-geographic:
+ * Shared with the Russian geographic profiles:
  *   - ջ [dʒ] → дж
- *   - ղ [ʁ]  → к word-initial; г mid-word
  *   - ո      → во word-initial + consonant; о elsewhere
  */
 import { transliterate } from "../../src";
 
-const t = (text: string) => transliterate(text, { standard: "ru-personal" });
+const t = (text: string) =>
+  transliterate(text, { standard: "ru-proper-vartapetyan-1961" });
 
 const B = "\u0562"; // բ — neutral mid-word wrapper
 const mid = (ch: string) => `${B}${ch}${B}`;
 
-describe("ru-personal standard", () => {
+describe("ru-proper-vartapetyan-1961 standard", () => {
   // ─────────────────────────────────────────────────────────────────────────
   // All 38 lowercase letters in mid-word context
   // ─────────────────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ describe("ru-personal standard", () => {
       ["\u056D", "\u0445"], // խ → х
       ["\u056E", "\u0446"], // ծ → ц
       ["\u056F", "\u043A"], // կ → к
-      ["\u0570", "\u0433"], // հ → г (mid-word; KEY DIFFERENCE from ru-geographic which uses х)
+      ["\u0570", "\u0433"], // հ → г (mid-word)
       ["\u0571", "\u0434\u0437"], // ձ → дз
       ["\u0572", "\u0433"], // ղ → г (mid-word)
       ["\u0573", "\u0447"], // ճ → ч
@@ -122,7 +122,7 @@ describe("ru-personal standard", () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // հ positional rule (KEY DIFFERENCE from ru-geographic)
+  // հ positional rule
   // ─────────────────────────────────────────────────────────────────────────
   describe("հ positional rule", () => {
     // word-initial before vowel → omit
@@ -177,20 +177,16 @@ describe("ru-personal standard", () => {
       expect(t("\u0540")).toBe("\u0413");
     });
 
-    // contrast with ru-geographic: same word gives different result
-    test("contrast: in ru-geographic lowercase հaяcтан → хаяcтан; here → аяcтан", () => {
-      const geo = transliterate(
-        "\u0570\u0561\u0575\u0561\u057D\u057F\u0561\u0576",
-        { standard: "ru-geographic" },
-      );
-      const per = t("\u0570\u0561\u0575\u0561\u057D\u057F\u0561\u0576");
-      expect(geo).toBe("\u0445\u0430\u044F\u0441\u0442\u0430\u043D"); // хаяcтан
-      expect(per).toBe("\u0430\u044F\u0441\u0442\u0430\u043D"); // аяcтан
+    test("contrast: Vartapetyan 1961 keeps initial հ before consonant as г; KT-1974 omits it", () => {
+      const geo = transliterate("հրանտ", { standard: "ru-geo-kt-1974" });
+      const per = t("հրանտ");
+      expect(geo).toBe("рант");
+      expect(per).toBe("грант");
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ղ positional: word-initial → к; mid-word → г  (shared with ru-geographic)
+  // ղ positional: word-initial → к; mid-word → г
   // ─────────────────────────────────────────────────────────────────────────
   describe("ղ positional rule: word-initial к, mid-word г", () => {
     test("ղ isolated → к", () => {
@@ -213,7 +209,7 @@ describe("ru-personal standard", () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ջ → дж  (shared with ru-geographic)
+  // ջ → дж
   // ─────────────────────────────────────────────────────────────────────────
   describe("ջ → дж", () => {
     test("ջ isolated → дж", () => {
@@ -238,7 +234,7 @@ describe("ru-personal standard", () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ո word-initial context  (shared with ru-geographic)
+  // ո word-initial context
   // ─────────────────────────────────────────────────────────────────────────
   describe("ο word-initial context rules", () => {
     test("ο isolated → во", () => {
@@ -286,11 +282,11 @@ describe("ru-personal standard", () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Full Armenian word transliterations (personal names context)
+  // Full Armenian word transliterations (proper names context)
   // ─────────────────────────────────────────────────────────────────────────
   describe("full Armenian word transliterations", () => {
     test.each([
-      // Personal names — note հ behavior
+      // Proper names — note հ behavior
       ["\u0570\u0561\u056F\u0578\u0562", "\u0430\u043A\u043E\u0431"], // հakob → акоб (Акоб)
       [
         "\u0570\u0561\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576",
@@ -321,7 +317,7 @@ describe("ru-personal standard", () => {
         "\u0535\u057C\u0587\u0561\u0576",
         "\u0415\u0440\u0435\u0432\u0430\u043D",
       ], // Ереван
-      // Common words (same as ru-geographic)
+      // Common words under proper-name rules
       ["\u056B\u0576\u0584\u0568", "\u0438\u043D\u043A\u044B"], // ինqը → инкы
       ["\u056F\u0561\u0580\u0578\u0572", "\u043A\u0430\u0440\u043E\u0433"], // կarəɤ → карог
       ["\u0576\u0561\u0587", "\u043D\u0430\u0435\u0432"], // naew → наев
