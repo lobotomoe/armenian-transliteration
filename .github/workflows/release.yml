@@ -1,0 +1,72 @@
+name: release
+
+# Triggered when a vX.Y.Z tag is pushed.
+# Builds, tests, then publishes to npm with provenance via OIDC
+# (Trusted Publishing — no NPM_TOKEN secret required).
+#
+# npm UI setup required (one-time): configure this workflow as a Trusted
+# Publisher at https://www.npmjs.com/package/armenian-transliteration/access
+# (GitHub Actions → repo `lobotomoe/armenian-transliteration`, workflow
+# `release.yml`). Optionally bind to a GitHub environment for an extra
+# approval gate; if used, also add `environment: <name>` to the publish job
+# below.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  # id-token: write is required for npm provenance via OIDC.
+  id-token: write
+
+jobs:
+  publish:
+    name: build, test, publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Knip
+        run: pnpm run knip
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Verify tag matches package.json version
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION" >&2
+            exit 1
+          fi
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public
