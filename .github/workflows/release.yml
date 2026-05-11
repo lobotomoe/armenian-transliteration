@@ -45,9 +45,18 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       # npm Trusted Publishing (OIDC) requires npm >= 11.5.1 for the publish
-      # request itself. Node 22 ships npm 10.x; bump explicitly.
-      - name: Upgrade npm for Trusted Publishing
-        run: npm install -g npm@latest
+      # request itself. Node 22 ships npm 10.x. Self-upgrade via `npm i -g npm`
+      # has a known race that corrupts the running install (MODULE_NOT_FOUND);
+      # install into a fresh prefix and prepend it to PATH instead.
+      - name: Install latest npm in separate prefix
+        run: |
+          NPM_PREFIX="$HOME/.npm-latest"
+          mkdir -p "$NPM_PREFIX"
+          npm install --prefix "$NPM_PREFIX" --no-audit --no-fund npm@latest
+          echo "$NPM_PREFIX/node_modules/.bin" >> "$GITHUB_PATH"
+
+      - name: Verify npm version
+        run: npm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
