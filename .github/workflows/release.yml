@@ -44,6 +44,11 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
+      # npm Trusted Publishing (OIDC) requires npm >= 11.5.1 for the publish
+      # request itself. Node 22 ships npm 10.x; bump explicitly.
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
