@@ -14,7 +14,7 @@ const packageJson = JSON.parse(
 
 describe("published package surface", () => {
   test("publishes the expected major version", () => {
-    expect(packageJson.version).toBe("3.0.0");
+    expect(packageJson.version).toMatch(/^3\.\d+\.\d+$/);
   });
 
   test("exports runtime API, profile API, static profile files and package metadata", () => {
