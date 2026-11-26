@@ -9,6 +9,7 @@ export type {
   CyrillicStandard,
   IpaStandard,
   Direction,
+  ReversibleStandard,
   TransliterateOptions,
   TransliterationStandard,
   CharMapping,

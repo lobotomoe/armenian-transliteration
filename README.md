@@ -117,7 +117,9 @@ Transliterate Armenian text.
 
 - `text: string` — input text (Armenian characters are transliterated, everything else passes through)
 - `options.standard` — transliteration standard (default: `"bgn-pcgn"`)
-- `options.direction` — `"from-armenian"` (default) or `"to-armenian"`
+- `options.direction` — `"from-armenian"` (default) or `"to-armenian"`; the
+  latter needs `standard` set to a `ReversibleStandard` (`"iso-9985"` or
+  `"hubschmann-meillet"`), which the types enforce
 
 #### Reverse transliteration
 

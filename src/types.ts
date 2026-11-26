@@ -24,13 +24,25 @@ export type Standard = LatinStandard | CyrillicStandard | IpaStandard;
  */
 export type Direction = "from-armenian" | "to-armenian";
 
-/** Options for the transliterate function */
-export interface TransliterateOptions {
-  /** Transliteration standard to use. Default: "bgn-pcgn" */
-  standard?: Standard;
-  /** Direction of transliteration. Default: "from-armenian" */
-  direction?: Direction;
-}
+/** Standards that can be read back into Armenian exactly */
+export type ReversibleStandard = "iso-9985" | "hubschmann-meillet";
+
+/**
+ * Options for the transliterate function. Reading back into Armenian has no
+ * default standard, since the default (BGN/PCGN) is not reversible.
+ */
+export type TransliterateOptions =
+  | {
+      /** Transliteration standard to use. Default: "bgn-pcgn" */
+      standard?: Standard;
+      /** Direction of transliteration. Default: "from-armenian" */
+      direction?: "from-armenian";
+    }
+  | {
+      /** A reversible standard the text is written in */
+      standard: ReversibleStandard;
+      direction: "to-armenian";
+    };
 
 /** Position of a token within a word */
 export type LetterPosition = "initial" | "medial" | "final" | "isolated";

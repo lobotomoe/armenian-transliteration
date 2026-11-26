@@ -1,7 +1,9 @@
-import { transliterate, createTransliterator } from "../../src";
-import type { Standard } from "../../src";
+import { transliterate, createTransliterator, listStandards } from "../../src";
+import type { ReversibleStandard } from "../../src";
+import { ReverseTransliterationEngine } from "../../src/engine/reverse";
+import { getStandard } from "../../src/standards/registry";
 
-const REVERSIBLE: readonly Standard[] = ["iso-9985", "hubschmann-meillet"];
+const REVERSIBLE: readonly ReversibleStandard[] = ["iso-9985", "hubschmann-meillet"];
 
 /** The 38 letters of the alphabet, plus the ու digraph and the և ligature. */
 const LETTERS = [
@@ -13,9 +15,9 @@ const LETTERS = [
 /** A third letter keeps every pair a word of two Latin tokens or more. */
 const FILLER = "ա";
 
-const toLatin = (text: string, standard: Standard) =>
+const toLatin = (text: string, standard: ReversibleStandard) =>
   transliterate(text, { standard });
-const toArmenian = (text: string, standard: Standard) =>
+const toArmenian = (text: string, standard: ReversibleStandard) =>
   transliterate(text, { standard, direction: "to-armenian" });
 
 function titleCase(word: string): string {
@@ -107,10 +109,16 @@ describe("to-armenian: exact spellings", () => {
 });
 
 describe("to-armenian: refusals", () => {
+  test("ReversibleStandard names exactly the standards marked reversible", () => {
+    const marked = listStandards().filter((id) => getStandard(id).reversible);
+    expect(marked.toSorted()).toEqual([...REVERSIBLE].toSorted());
+  });
+
   test.each(["bgn-pcgn", "ala-lc", "ru-geo-ra-2011", "ipa-eastern"] as const)(
     "%s is not reversible",
     (standard) => {
-      expect(() => toArmenian("a", standard)).toThrow(/not reversible/);
+      const definition = getStandard(standard);
+      expect(() => new ReverseTransliterationEngine(definition)).toThrow(/not reversible/);
     },
   );
 });
