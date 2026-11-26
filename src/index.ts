@@ -1,5 +1,6 @@
-import type { Standard, TransliterateOptions } from "./types.js";
+import type { Direction, Standard, TransliterateOptions } from "./types.js";
 import { TransliterationEngine } from "./engine/engine.js";
+import { ReverseTransliterationEngine } from "./engine/reverse.js";
 import { getStandard } from "./standards/registry.js";
 
 export type {
@@ -33,7 +34,11 @@ export type {
   ProfileStatus,
 } from "./profiles/index.js";
 
-const engineCache = new Map<Standard, TransliterationEngine>();
+interface Engine {
+  transliterate(text: string): string;
+}
+
+const engineCache = new Map<string, Engine>();
 
 function assertString(text: string): void {
   if (typeof text !== "string") {
@@ -41,19 +46,35 @@ function assertString(text: string): void {
   }
 }
 
-function getEngine(standard: Standard): TransliterationEngine {
-  let engine = engineCache.get(standard);
+function createEngine(standard: Standard, direction: Direction): Engine {
+  const definition = getStandard(standard);
+  switch (direction) {
+    case "from-armenian":
+      return new TransliterationEngine(definition);
+    case "to-armenian":
+      return new ReverseTransliterationEngine(definition);
+    default:
+      throw new Error(`Unknown transliteration direction: ${String(direction)}`);
+  }
+}
+
+function getEngine(options: TransliterateOptions | undefined): Engine {
+  const standard = options?.standard ?? "bgn-pcgn";
+  const direction = options?.direction ?? "from-armenian";
+  const key = `${standard} ${direction}`;
+  let engine = engineCache.get(key);
   if (!engine) {
-    engine = new TransliterationEngine(getStandard(standard));
-    engineCache.set(standard, engine);
+    engine = createEngine(standard, direction);
+    engineCache.set(key, engine);
   }
   return engine;
 }
 
 /**
- * Transliterate Armenian text to the chosen target script.
+ * Transliterate Armenian text to the chosen target script, or, with
+ * `direction: "to-armenian"` and a reversible standard, back to Armenian.
  *
- * @param text - The Armenian text to transliterate
+ * @param text - The text to transliterate
  * @param options - Standard and direction options
  * @returns Transliterated text
  */
@@ -62,7 +83,7 @@ export function transliterate(
   options?: TransliterateOptions,
 ): string {
   assertString(text);
-  return getEngine(options?.standard ?? "bgn-pcgn").transliterate(text);
+  return getEngine(options).transliterate(text);
 }
 
 /**
@@ -75,7 +96,7 @@ export function transliterate(
 export function createTransliterator(
   options: TransliterateOptions = {},
 ): (text: string) => string {
-  const engine = getEngine(options.standard ?? "bgn-pcgn");
+  const engine = getEngine(options);
   return (text: string) => {
     assertString(text);
     return engine.transliterate(text);

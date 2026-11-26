@@ -18,8 +18,11 @@ export type IpaStandard = "ipa-eastern" | "ipa-western";
 /** All supported transliteration standards */
 export type Standard = LatinStandard | CyrillicStandard | IpaStandard;
 
-/** Transliteration direction. Only `from-armenian` is currently supported. */
-export type Direction = "from-armenian";
+/**
+ * Transliteration direction. `to-armenian` reads text written in a reversible
+ * standard (ISO 9985, Hübschmann-Meillet) back into Armenian.
+ */
+export type Direction = "from-armenian" | "to-armenian";
 
 /** Options for the transliterate function */
 export interface TransliterateOptions {

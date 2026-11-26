@@ -49,6 +49,10 @@ transliterate("Տիգրան", { standard: "ipa-eastern" }); // "Tiɡɾɑn"
 transliterate("Երևան", { standard: "ipa-western" });  // "Jeɾevɑn"
 transliterate("Տիգրան", { standard: "ipa-western" }); // "Dikʰɾɑn"
 
+// Back to Armenian, from a reversible standard only
+transliterate("Erewan", { standard: "iso-9985", direction: "to-armenian" });          // "Երևան"
+transliterate("Urartu", { standard: "hubschmann-meillet", direction: "to-armenian" }); // "Ուրարտու"
+
 // Factory for repeated use
 const toRussian = createTransliterator({ standard: "ru-geo-kt-1974" });
 toRussian("Հայաստան");  // "Аястан"
@@ -113,7 +117,25 @@ Transliterate Armenian text.
 
 - `text: string` — input text (Armenian characters are transliterated, everything else passes through)
 - `options.standard` — transliteration standard (default: `"bgn-pcgn"`)
-- `options.direction` — only `"from-armenian"` (default) is supported in 3.x; reverse transliteration is out of scope
+- `options.direction` — `"from-armenian"` (default) or `"to-armenian"`
+
+#### Reverse transliteration
+
+`direction: "to-armenian"` reads text written in ISO 9985 or Hübschmann-Meillet
+back into Armenian. Every other standard throws: they merge letters (BGN/PCGN
+writes both տ and թ as "t") or depend on position, so the way back would be a
+guess.
+
+- Armenian text survives a round trip exactly, letter by letter and in lower,
+  title and upper case, with one exception: a lowercase ե+ւ and the ligature և
+  are both "ew", and "ew" reads back as և (reformed spelling). A capitalized
+  "Ew" is Եւ, since և has no capital.
+- Spellings must be exact: aspiration is the modifier letter ʿ (U+02BF), so
+  `t'` is տ followed by an apostrophe, not թ. Decomposed and precomposed
+  diacritics are read alike.
+- Only letters are converted. Punctuation and characters the standard does not
+  use (such as `q`) pass through unchanged.
+- In Hübschmann-Meillet a word that is a single capital "U" reads as Ու, not ՈՒ.
 
 ### `createTransliterator(options)`
 
