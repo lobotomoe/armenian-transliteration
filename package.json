@@ -1,6 +1,6 @@
 {
   "name": "armenian-transliteration",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Multi-standard Armenian transliteration (BGN/PCGN, ISO 9985, Hübschmann-Meillet, ALA-LC, Russian geographic profiles, Russian proper names, IPA)",
   "keywords": [
     "armenian",
